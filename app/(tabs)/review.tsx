@@ -153,7 +153,6 @@ export default function ReviewsScreen() {
         </View>
 
         <View style={styles.section}>
-          <ThemedText style={styles.label}>Overall rating</ThemedText>
           <View style={styles.starsRow}>
             {[1, 2, 3, 4, 5].map((value) => (
               <Pressable
@@ -317,7 +316,8 @@ const styles = StyleSheet.create({
   },
   starsRow: {
     flexDirection: "row",
-    marginTop: 4,
+    justifyContent: "center",
+    alignItems: "center",
   },
   starButton: {
     marginRight: 5,
