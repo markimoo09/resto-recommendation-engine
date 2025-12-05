@@ -131,11 +131,9 @@ export default function RecommendationsScreen() {
             {selectedMembers.map((member) => (
               <View
                 key={member}
-                style={[styles.chip, { backgroundColor: accent + '12' }]}
+                style={[styles.memberIcon, { borderColor }]}
               >
-                <ThemedText style={[styles.chipText, { color: accent }]}>
-                  {member}
-                </ThemedText>
+                <IconSymbol name="person.fill" size={18} color={accent} />
               </View>
             ))}
             <Pressable
@@ -146,28 +144,8 @@ export default function RecommendationsScreen() {
                 pressed && { opacity: 0.85 },
               ]}
             >
-              <ThemedText style={[styles.muted, { color: accent }]}>+ Add</ThemedText>
+              <ThemedText style={[styles.addIcon, { color: accent }]}>+</ThemedText>
             </Pressable>
-          </View>
-        </View>
-
-        <View
-          style={[
-            styles.card,
-            { backgroundColor: colorScheme === 'dark' ? '#111418' : '#fff', borderColor },
-          ]}
-        >
-          <ThemedText style={styles.label}>Session goal</ThemedText>
-          <ThemedText style={[styles.muted, { color: mutedText }]}>
-            Kilo will return 3 Perfect Fits, 2 Safe Options, and 1 Wildcard.
-            Safety-first mode removes the wildcard; Explore boosts novelty within
-            constraints.
-          </ThemedText>
-          <View style={styles.metaRow}>
-            <ThemedText style={styles.metaLabel}>Constraints</ThemedText>
-            <ThemedText style={[styles.metaValue, { color: mutedText }]}>
-              diet, budget, distance locked for this run
-            </ThemedText>
           </View>
         </View>
 
@@ -294,6 +272,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
+    paddingTop: 32,
     paddingBottom: 80,
   },
   heading: {
@@ -351,15 +330,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
   },
-  chip: {
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+  memberIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 10,
     marginBottom: 10,
-  },
-  chipText: {
-    fontWeight: '600',
   },
   addChip: {
     borderWidth: 1,
@@ -367,19 +346,11 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 8,
+    marginBottom: 10,
   },
-  metaRow: {
-    marginTop: 12,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderColor: 'rgba(0,0,0,0.05)',
-  },
-  metaLabel: {
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  metaValue: {
-    fontSize: 14,
+  addIcon: {
+    fontWeight: '800',
+    fontSize: 16,
   },
   primaryButton: {
     borderRadius: 14,

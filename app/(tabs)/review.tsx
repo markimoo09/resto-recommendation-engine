@@ -14,17 +14,19 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 const mockPlaces = [
-  { name: 'Shoyu Lab', detail: 'Ramen · 1.2 mi', visit: 'Sun night' },
-  { name: 'Cedar Mezze', detail: 'Mediterranean · 0.6 mi', visit: 'Tue lunch' },
-  { name: 'Pizzeria Lola', detail: 'Pizza · 2.1 mi', visit: 'Last week' },
+  { name: 'Shoyu Lab', detail: 'Ramen · 1.2 mi' },
+  { name: 'Cedar Mezze', detail: 'Mediterranean · 0.6 mi' },
+  { name: 'Pizzeria Lola', detail: 'Pizza · 2.1 mi' },
 ];
 
 export default function ReviewsScreen() {
   const colorScheme = useColorScheme();
   const accent = Colors[colorScheme ?? 'light'].tint;
-  const [selectedLocation, setSelectedLocation] = useState(mockPlaces[0]);
+  const [selectedLocation, setSelectedLocation] = useState<typeof mockPlaces[0] | null>(null);
   const [rating, setRating] = useState(4);
   const [notes, setNotes] = useState('Loved the broth, service was quick, spice was just right.');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [photoUri, setPhotoUri] = useState('');
 
   const { cardBackground, borderColor, mutedText, inputBg } = useMemo(() => {
     const isDark = colorScheme === 'dark';
@@ -35,6 +37,12 @@ export default function ReviewsScreen() {
       inputBg: isDark ? '#0f1115' : '#fff',
     };
   }, [colorScheme]);
+
+  const filteredPlaces = searchQuery
+    ? mockPlaces.filter((place) =>
+        place.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   return (
     <ThemedView style={styles.container}>
@@ -51,57 +59,119 @@ export default function ReviewsScreen() {
 
         <View style={styles.section}>
           <ThemedText style={styles.label}>Location</ThemedText>
-          {mockPlaces.map((place) => {
-            const selected = place.name === selectedLocation.name;
-            return (
-              <Pressable
-                key={place.name}
-                onPress={() => setSelectedLocation(place)}
-                style={({ pressed }) => [
-                  styles.option,
-                  {
-                    borderColor,
-                    backgroundColor: selected ? accent + '12' : cardBackground,
-                  },
-                  pressed && { opacity: 0.88 },
-                ]}
+          <TextInput
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Search for a place"
+            placeholderTextColor={mutedText}
+            style={[
+              styles.input,
+              {
+                borderColor,
+                backgroundColor: inputBg,
+                color: Colors[colorScheme ?? 'light'].text,
+              },
+            ]}
+          />
+          <View style={[styles.suggestionList, { borderColor }]}>
+            {filteredPlaces.length > 0 ? (
+              filteredPlaces.map((place) => {
+                const selected = selectedLocation?.name === place.name;
+                return (
+                  <Pressable
+                    key={place.name}
+                    onPress={() => setSelectedLocation(place)}
+                    style={({ pressed }) => [
+                      styles.suggestion,
+                      {
+                        backgroundColor: selected ? accent + '12' : undefined,
+                      },
+                      pressed && { opacity: 0.88 },
+                    ]}
+                  >
+                    <View>
+                      <ThemedText style={styles.optionTitle}>{place.name}</ThemedText>
+                      <ThemedText style={[styles.optionCaption, { color: mutedText }]}>
+                        {place.detail}
+                      </ThemedText>
+                    </View>
+                    {selected && (
+                      <IconSymbol name="chevron.right" size={18} color={accent} />
+                    )}
+                  </Pressable>
+                );
+              })
+            ) : (
+              <ThemedText
+                style={[styles.optionCaption, { color: mutedText, paddingHorizontal: 4 }]}
               >
-                <View>
-                  <ThemedText style={styles.optionTitle}>{place.name}</ThemedText>
-                  <ThemedText style={[styles.optionCaption, { color: mutedText }]}>
-                    {place.detail}
-                  </ThemedText>
-                </View>
-                <View style={[styles.pill, { backgroundColor: selected ? accent + '1a' : undefined }]}>
-                  <ThemedText style={[styles.pillText, { color: selected ? accent : mutedText }]}>
-                    {place.visit}
-                  </ThemedText>
-                </View>
+                Type to search and select a spot.
+              </ThemedText>
+            )}
+          </View>
+
+          {selectedLocation && (
+            <View
+              style={[styles.selectedRow, { borderColor, backgroundColor: cardBackground }]}
+            >
+              <IconSymbol name="book.fill" size={20} color={accent} />
+              <View style={styles.selectedTextBlock}>
+                <ThemedText style={styles.optionTitle}>{selectedLocation.name}</ThemedText>
+                <ThemedText style={[styles.optionCaption, { color: mutedText }]}>
+                  {selectedLocation.detail}
+                </ThemedText>
+              </View>
+              <Pressable onPress={() => setSelectedLocation(null)}>
+                <ThemedText style={[styles.clearText, { color: mutedText }]}>Clear</ThemedText>
               </Pressable>
-            );
-          })}
+            </View>
+          )}
         </View>
 
         <View style={styles.section}>
-          <ThemedText style={styles.label}>Photos</ThemedText>
-          <View style={styles.photoRow}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.photoTile,
-                {
-                  borderColor,
-                  backgroundColor: inputBg,
-                },
-                pressed && { opacity: 0.9 },
-              ]}
-            >
-              <IconSymbol name="paperplane.fill" color={accent} size={26} />
-              <ThemedText style={[styles.photoText, { color: accent }]}>Add photo</ThemedText>
-            </Pressable>
-            <View style={[styles.photoTile, { borderColor, backgroundColor: cardBackground }]}>
-              <ThemedText style={styles.photoText}>dining_room.jpg</ThemedText>
-              <ThemedText style={[styles.optionCaption, { color: mutedText }]}>Mock upload</ThemedText>
-            </View>
+          <ThemedText style={styles.label}>Photo</ThemedText>
+          <Pressable
+            onPress={() => setPhotoUri((prev) => (prev ? '' : 'dining_room.jpg'))}
+            style={({ pressed }) => [
+              styles.photoSquare,
+              {
+                borderColor,
+                backgroundColor: photoUri ? accent + '12' : inputBg,
+              },
+              pressed && { opacity: 0.9 },
+            ]}
+          >
+            {photoUri ? (
+              <View style={styles.photoFilled}>
+                <IconSymbol name="paperplane.fill" color={accent} size={24} />
+                <ThemedText style={[styles.photoText, { color: accent }]}>{photoUri}</ThemedText>
+              </View>
+            ) : (
+              <View style={styles.photoEmpty}>
+                <IconSymbol name="paperplane.fill" color={accent} size={26} />
+                <ThemedText style={[styles.photoText, { color: accent }]}>Add image</ThemedText>
+                <ThemedText style={[styles.optionCaption, { color: mutedText }]}>Press to attach</ThemedText>
+              </View>
+            )}
+          </Pressable>
+        </View>
+
+        <View style={styles.section}>
+          <ThemedText style={styles.label}>Overall rating</ThemedText>
+          <View style={styles.starsRow}>
+            {[1, 2, 3, 4, 5].map((value) => (
+              <Pressable
+                key={value}
+                onPress={() => setRating(value)}
+                style={({ pressed }) => [styles.starButton, pressed && { transform: [{ scale: 0.96 }] }]}
+              >
+                <IconSymbol
+                  name="star.fill"
+                  size={32}
+                  color={value <= rating ? accent : borderColor}
+                />
+              </Pressable>
+            ))}
           </View>
         </View>
 
@@ -132,25 +202,6 @@ export default function ReviewsScreen() {
           </View>
         </View>
 
-        <View style={styles.section}>
-          <ThemedText style={styles.label}>Overall rating</ThemedText>
-          <View style={styles.starsRow}>
-            {[1, 2, 3, 4, 5].map((value) => (
-              <Pressable
-                key={value}
-                onPress={() => setRating(value)}
-                style={({ pressed }) => [styles.starButton, pressed && { transform: [{ scale: 0.96 }] }]}
-              >
-                <IconSymbol
-                  name="star.fill"
-                  size={32}
-                  color={value <= rating ? accent : borderColor}
-                />
-              </Pressable>
-            ))}
-          </View>
-        </View>
-
         <Pressable
           style={({ pressed }) => [
             styles.primaryButton,
@@ -174,6 +225,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
+    paddingTop: 32,
     paddingBottom: 80,
   },
   heading: {
@@ -190,14 +242,27 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 10,
   },
-  option: {
+  input: {
     borderWidth: 1,
-    borderRadius: 14,
-    padding: 14,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 15,
     marginBottom: 10,
+  },
+  suggestionList: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 8,
+    marginBottom: 10,
+  },
+  suggestion: {
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+    borderRadius: 10,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   optionTitle: {
     fontWeight: '700',
@@ -206,25 +271,34 @@ const styles = StyleSheet.create({
   optionCaption: {
     fontSize: 14,
   },
-  pill: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 999,
-  },
-  pillText: {
-    fontWeight: '600',
-  },
-  photoRow: {
+  selectedRow: {
     flexDirection: 'row',
-  },
-  photoTile: {
-    flex: 1,
+    alignItems: 'center',
     borderWidth: 1,
     borderRadius: 12,
-    padding: 14,
-    marginRight: 10,
+    padding: 12,
+    marginTop: 4,
+  },
+  selectedTextBlock: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  clearText: {
+    fontWeight: '700',
+  },
+  photoSquare: {
+    width: '100%',
+    height: 220,
+    borderWidth: 1,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  photoEmpty: {
+    alignItems: 'center',
+  },
+  photoFilled: {
+    alignItems: 'center',
   },
   photoText: {
     fontWeight: '700',

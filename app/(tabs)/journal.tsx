@@ -115,14 +115,6 @@ export default function ReviewHistoryScreen() {
                   {entry.group}
                 </ThemedText>
               </View>
-              <Pressable
-                style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.85 }]}
-              >
-                <ThemedText style={[styles.linkText, { color: accent }]}>
-                  View full rating
-                </ThemedText>
-                <IconSymbol name="chevron.right" size={18} color={accent} />
-              </Pressable>
             </View>
           </Pressable>
         ))}
@@ -137,6 +129,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
+    paddingTop: 32,
     paddingBottom: 60,
   },
   headerRow: {
@@ -197,7 +190,7 @@ const styles = StyleSheet.create({
   },
   footerRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   pill: {
@@ -207,13 +200,5 @@ const styles = StyleSheet.create({
   },
   pillText: {
     fontWeight: '600',
-  },
-  linkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  linkText: {
-    fontWeight: '700',
-    marginRight: 4,
   },
 });

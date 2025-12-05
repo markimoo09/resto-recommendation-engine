@@ -19,21 +19,21 @@ const mockGroups = [
     name: 'Weekend Foodies',
     members: ['Sam', 'Mina', 'Chris', 'Ava'],
     focus: 'Comfort picks · <$30 · 2 mi · medium spice',
-    lastPick: 'Sun: ramen + ice cream',
+    lastRestaurant: 'Shoyu Lab',
     mode: 'Explore',
   },
   {
     name: 'Tuesday Lunch Crew',
     members: ['Alex', 'Priya'],
     focus: 'Fast-casual · <$20 · walkable · veg-friendly',
-    lastPick: 'Tue: mezze bar',
+    lastRestaurant: 'Cedar Mezze',
     mode: 'Safety-first',
   },
   {
     name: 'Family Dinner',
     members: ['Mom', 'Dad', 'Lina'],
     focus: 'Cozy · kid-friendly · 5 mi · low spice',
-    lastPick: 'Fri: neighborhood Italian',
+    lastRestaurant: 'Trattoria Rosa',
     mode: 'Balanced',
   },
 ];
@@ -75,10 +75,12 @@ export default function HomeScreen() {
               Keep your circles ready before you run a suggestion.
             </ThemedText>
           </View>
-          <View style={[styles.pill, { backgroundColor: accent + '1a' }]}>
-            <ThemedText style={[styles.pillText, { color: accent }]}>
-              3/5 ready
-            </ThemedText>
+          <View style={styles.readyWrap}>
+            <View style={[styles.pill, { backgroundColor: accent + '1a' }]}>
+              <ThemedText style={[styles.pillText, { color: accent }]}>
+                3 ready
+              </ThemedText>
+            </View>
           </View>
         </View>
 
@@ -105,6 +107,7 @@ export default function HomeScreen() {
             <ThemedText style={[styles.muted, { color: mutedText }]}>
               {group.focus}
             </ThemedText>
+            <View style={[styles.divider, { backgroundColor: borderColor }]} />
             <View style={styles.membersRow}>
               <View style={styles.avatarRow}>
                 {group.members.map((member) => (
@@ -125,10 +128,13 @@ export default function HomeScreen() {
                 ))}
               </View>
               <View style={styles.metaBlock}>
-                <ThemedText style={styles.metaLabel}>Last session</ThemedText>
-                <ThemedText style={[styles.metaValue, { color: mutedText }]}>
-                  {group.lastPick}
-                </ThemedText>
+                <ThemedText style={styles.metaLabel}>Last pick</ThemedText>
+                <View style={styles.lastPickRow}>
+                  <IconSymbol name="book.fill" size={16} color={mutedText} />
+                  <ThemedText style={[styles.metaValue, { color: mutedText }]}>
+                    {group.lastRestaurant}
+                  </ThemedText>
+                </View>
               </View>
             </View>
           </Pressable>
@@ -240,13 +246,19 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
+    paddingTop: 32,
     paddingBottom: 120,
   },
   headingRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
     marginBottom: 16,
+  },
+  readyWrap: {
+    alignSelf: 'flex-start',
+    marginTop: 4,
   },
   subheading: {
     marginTop: 6,
@@ -283,6 +295,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginTop: 4,
   },
   avatarRow: {
     flexDirection: 'row',
@@ -301,6 +314,15 @@ const styles = StyleSheet.create({
   },
   metaBlock: {
     alignItems: 'flex-end',
+  },
+  lastPickRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  divider: {
+    height: 1,
+    marginVertical: 10,
   },
   metaLabel: {
     fontSize: 13,
