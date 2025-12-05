@@ -244,7 +244,9 @@ export default function RecommendationsScreen() {
         ]}
       >
         <View style={[styles.buttonContent, { backgroundColor: accent }]}>
-          <ThemedText style={styles.primaryText}>Generate suggestion</ThemedText>
+          <ThemedText style={styles.primaryText}>
+            Generate suggestion
+          </ThemedText>
         </View>
       </Pressable>
     </ThemedView>
