@@ -84,19 +84,20 @@ export default function HomeScreen() {
               pressed && styles.cardPressed,
             ]}
           >
-            <View style={styles.cardHeader}>
-              <ThemedText type="subtitle">{group.name}</ThemedText>
-              <View style={[styles.pill, { backgroundColor: accent + "1a" }]}>
-                <ThemedText style={[styles.pillText, { color: accent }]}>
-                  {group.mode}
-                </ThemedText>
+            <View style={styles.cardTop}>
+              <View style={styles.cardHeader}>
+                <ThemedText type="subtitle">{group.name}</ThemedText>
+                <View style={[styles.pill, { backgroundColor: accent + "1a" }]}>
+                  <ThemedText style={[styles.pillText, { color: accent }]}>
+                    {group.mode}
+                  </ThemedText>
+                </View>
               </View>
+              <ThemedText style={[styles.focus, { color: mutedText }]}>
+                {group.focus}
+              </ThemedText>
             </View>
-            <ThemedText style={[styles.muted, { color: mutedText }]}>
-              {group.focus}
-            </ThemedText>
-            <View style={[styles.divider, { backgroundColor: borderColor }]} />
-            <View style={styles.membersRow}>
+            <View style={[styles.cardBottom, { borderTopColor: borderColor }]}>
               <View style={styles.avatarRow}>
                 {group.members.map((member) => (
                   <View
@@ -116,14 +117,16 @@ export default function HomeScreen() {
                   </View>
                 ))}
               </View>
-              <View style={styles.metaBlock}>
-                <ThemedText style={styles.metaLabel}>Last pick</ThemedText>
-                <View style={styles.lastPickRow}>
-                  <IconSymbol name="book.fill" size={16} color={mutedText} />
-                  <ThemedText style={[styles.metaValue, { color: mutedText }]}>
-                    {group.lastRestaurant}
-                  </ThemedText>
-                </View>
+              <View style={styles.lastPick}>
+                <IconSymbol name="book.fill" size={14} color={mutedText} />
+                <ThemedText
+                  style={[
+                    styles.lastPickText,
+                    { color: mutedText, marginLeft: 4 },
+                  ]}
+                >
+                  {group.lastRestaurant}
+                </ThemedText>
               </View>
             </View>
           </Pressable>
@@ -269,63 +272,56 @@ const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
     borderRadius: 10,
-    padding: 8,
-    marginBottom: 6,
+    padding: 10,
+    marginBottom: 8,
   },
   cardPressed: {
     transform: [{ scale: 0.99 }],
+  },
+  cardTop: {
+    marginBottom: 10,
   },
   cardHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 4,
+    marginBottom: 6,
   },
-  muted: {
-    fontSize: 15,
-    marginBottom: 4,
+  focus: {
+    fontSize: 13,
+    lineHeight: 18,
   },
-  membersRow: {
+  cardBottom: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 2,
+    paddingTop: 8,
+    borderTopWidth: 1,
   },
   avatarRow: {
     flexDirection: "row",
+    alignItems: "center",
   },
   avatar: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 1,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 1.5,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 5,
+    marginRight: 6,
   },
   avatarText: {
     fontWeight: "600",
-    fontSize: 13,
+    fontSize: 12,
   },
-  metaBlock: {
-    alignItems: "flex-end",
-  },
-  lastPickRow: {
+  lastPick: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 2,
   },
-  divider: {
-    height: 1,
-    marginVertical: 4,
-  },
-  metaLabel: {
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  metaValue: {
-    marginTop: 2,
-    fontSize: 13,
+  lastPickText: {
+    fontSize: 12,
+    fontWeight: "500",
   },
   fab: {
     position: "absolute",
