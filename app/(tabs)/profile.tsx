@@ -36,6 +36,10 @@ export default function ProfileScreen() {
   return (
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ThemedText type="title" style={styles.heading}>
+          Profile
+        </ThemedText>
+
         <View
           style={[
             styles.card,
@@ -148,16 +152,19 @@ const styles = StyleSheet.create({
     paddingTop: 44,
     paddingBottom: 60,
   },
+  heading: {
+    marginBottom: 12,
+  },
   card: {
     borderWidth: 1,
     borderRadius: 10,
-    padding: 10,
-    marginBottom: 8,
+    padding: 8,
+    marginBottom: 6,
   },
   profileRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 8,
   },
   avatar: {
     width: 52,
@@ -172,7 +179,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   muted: {
-    fontSize: 12,
+    fontSize: 14,
   },
   statRow: {
     flexDirection: "row",
@@ -188,47 +195,47 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontWeight: "800",
-    fontSize: 16,
+    fontSize: 18,
   },
   statLabel: {
-    fontSize: 11,
-    marginTop: 2,
+    fontSize: 13,
+    marginTop: 4,
   },
   sectionTitle: {
     fontWeight: "700",
-    marginBottom: 6,
-    fontSize: 14,
+    marginBottom: 8,
+    fontSize: 16,
   },
   prefRow: {
-    marginBottom: 8,
+    marginBottom: 10,
   },
   prefLabel: {
     fontWeight: "700",
-    marginBottom: 2,
-    fontSize: 13,
+    marginBottom: 4,
+    fontSize: 14,
   },
   prefValue: {
-    fontSize: 12,
+    fontSize: 14,
   },
   primaryButton: {
     borderRadius: 10,
     padding: 10,
-    marginBottom: 6,
+    marginBottom: 8,
   },
   primaryRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 3,
+    marginBottom: 4,
   },
   primaryText: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 13,
+    fontSize: 14,
     marginLeft: 6,
   },
   primaryHint: {
     color: "#e0f2ff",
-    fontSize: 11,
+    fontSize: 13,
   },
   secondaryButton: {
     borderWidth: 1,
@@ -238,11 +245,11 @@ const styles = StyleSheet.create({
   },
   secondaryText: {
     fontWeight: "700",
-    fontSize: 13,
+    fontSize: 14,
   },
   inlineRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 3,
+    marginBottom: 4,
   },
 });

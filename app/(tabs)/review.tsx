@@ -57,9 +57,6 @@ export default function ReviewsScreen() {
         <ThemedText type="title" style={styles.heading}>
           Rate
         </ThemedText>
-        <ThemedText style={[styles.subheading, { color: mutedText }]}>
-          Capture how the visit went so Kilo can tune your group’s taste.
-        </ThemedText>
 
         <View style={styles.section}>
           <ThemedText style={styles.label}>Location</ThemedText>
@@ -124,32 +121,6 @@ export default function ReviewsScreen() {
               </ThemedText>
             )}
           </View>
-
-          {selectedLocation && (
-            <View
-              style={[
-                styles.selectedRow,
-                { borderColor, backgroundColor: cardBackground },
-              ]}
-            >
-              <IconSymbol name="book.fill" size={18} color={accent} />
-              <View style={styles.selectedTextBlock}>
-                <ThemedText style={styles.optionTitle}>
-                  {selectedLocation.name}
-                </ThemedText>
-                <ThemedText
-                  style={[styles.optionCaption, { color: mutedText }]}
-                >
-                  {selectedLocation.detail}
-                </ThemedText>
-              </View>
-              <Pressable onPress={() => setSelectedLocation(null)}>
-                <ThemedText style={[styles.clearText, { color: mutedText }]}>
-                  Clear
-                </ThemedText>
-              </Pressable>
-            </View>
-          )}
         </View>
 
         <View style={styles.section}>
@@ -271,36 +242,32 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   heading: {
-    marginBottom: 4,
-  },
-  subheading: {
-    marginBottom: 10,
-    fontSize: 14,
+    marginBottom: 12,
   },
   section: {
     marginBottom: 12,
   },
   label: {
     fontWeight: "700",
-    marginBottom: 6,
-    fontSize: 13,
+    marginBottom: 8,
+    fontSize: 14,
   },
   input: {
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
-    paddingVertical: 7,
-    fontSize: 13,
+    paddingVertical: 8,
+    fontSize: 15,
     marginBottom: 6,
   },
   suggestionList: {
     borderWidth: 1,
     borderRadius: 10,
-    padding: 5,
+    padding: 6,
     marginBottom: 6,
   },
   suggestion: {
-    paddingVertical: 6,
+    paddingVertical: 8,
     paddingHorizontal: 6,
     borderRadius: 8,
     flexDirection: "row",
@@ -309,27 +276,13 @@ const styles = StyleSheet.create({
   },
   optionTitle: {
     fontWeight: "700",
-    marginBottom: 2,
-    fontSize: 13,
+    marginBottom: 4,
+    fontSize: 15,
+    lineHeight: 20,
   },
   optionCaption: {
-    fontSize: 12,
-  },
-  selectedRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 8,
-    marginTop: 4,
-  },
-  selectedTextBlock: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  clearText: {
-    fontWeight: "700",
-    fontSize: 13,
+    fontSize: 14,
+    lineHeight: 18,
   },
   photoSquare: {
     width: "100%",
@@ -348,31 +301,31 @@ const styles = StyleSheet.create({
   photoText: {
     fontWeight: "700",
     marginTop: 4,
-    fontSize: 12,
+    fontSize: 15,
   },
   textArea: {
     borderWidth: 1,
     borderRadius: 10,
-    padding: 9,
-    fontSize: 13,
-    minHeight: 90,
+    padding: 10,
+    fontSize: 15,
+    minHeight: 100,
     textAlignVertical: "top",
   },
   tagRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginTop: 6,
+    marginTop: 8,
   },
   tag: {
     borderRadius: 999,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    marginRight: 5,
-    marginBottom: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginRight: 6,
+    marginBottom: 6,
   },
   tagText: {
     fontWeight: "700",
-    fontSize: 12,
+    fontSize: 13,
   },
   starsRow: {
     flexDirection: "row",

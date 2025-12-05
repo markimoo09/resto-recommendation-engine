@@ -50,25 +50,9 @@ export default function ReviewHistoryScreen() {
   return (
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.headerRow}>
-          <View>
-            <ThemedText type="title">Journal</ThemedText>
-            <ThemedText style={[styles.subheading, { color: mutedText }]}>
-              Track the places you rated and keep context for the group.
-            </ThemedText>
-          </View>
-          <Pressable
-            style={({ pressed }) => [
-              styles.secondaryButton,
-              { borderColor },
-              pressed && { opacity: 0.85 },
-            ]}
-          >
-            <ThemedText style={[styles.secondaryText, { color: accent }]}>
-              New rating
-            </ThemedText>
-          </Pressable>
-        </View>
+        <ThemedText type="title" style={styles.heading}>
+          Journal
+        </ThemedText>
 
         {entries.map((entry) => (
           <Pressable
@@ -122,6 +106,20 @@ export default function ReviewHistoryScreen() {
           </Pressable>
         ))}
       </ScrollView>
+
+      <Pressable
+        onPress={() => {
+          // Navigate to review page or open rating modal
+        }}
+        style={({ pressed }) => [
+          styles.fab,
+          { backgroundColor: accent },
+          pressed && { opacity: 0.9 },
+        ]}
+      >
+        <IconSymbol name="star.fill" color="#fff" size={22} />
+        <ThemedText style={styles.fabText}>New rating</ThemedText>
+      </Pressable>
     </ThemedView>
   );
 }
@@ -133,65 +131,48 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 16,
     paddingTop: 44,
-    paddingBottom: 60,
+    paddingBottom: 100,
   },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  subheading: {
-    marginTop: 4,
-    fontSize: 14,
-  },
-  secondaryButton: {
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  secondaryText: {
-    fontWeight: "700",
-    fontSize: 12,
+  heading: {
+    marginBottom: 12,
   },
   card: {
     borderWidth: 1,
     borderRadius: 10,
-    padding: 10,
-    marginBottom: 8,
+    padding: 8,
+    marginBottom: 6,
   },
   cardHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 6,
+    marginBottom: 4,
   },
   muted: {
-    fontSize: 11,
+    fontSize: 13,
   },
   ratingRow: {
     flexDirection: "row",
   },
   note: {
-    fontSize: 13,
-    marginBottom: 6,
+    fontSize: 15,
+    marginBottom: 4,
   },
   tagRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 6,
+    marginBottom: 4,
   },
   tag: {
     borderRadius: 999,
-    paddingHorizontal: 7,
+    paddingHorizontal: 8,
     paddingVertical: 3,
     marginRight: 5,
     marginBottom: 5,
   },
   tagText: {
     fontWeight: "700",
-    fontSize: 11,
+    fontSize: 13,
   },
   footerRow: {
     flexDirection: "row",
@@ -205,6 +186,26 @@ const styles = StyleSheet.create({
   },
   pillText: {
     fontWeight: "600",
-    fontSize: 12,
+    fontSize: 13,
+  },
+  fab: {
+    position: "absolute",
+    right: 16,
+    bottom: 26,
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  fabText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 14,
+    marginLeft: 6,
   },
 });

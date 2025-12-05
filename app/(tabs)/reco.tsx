@@ -76,71 +76,6 @@ export default function RecommendationsScreen() {
         <ThemedText type="title" style={styles.heading}>
           Suggest
         </ThemedText>
-        <ThemedText style={[styles.subheading, { color: mutedText }]}>
-          Pick the group and members in this run, then generate a set of fits.
-        </ThemedText>
-
-        <View
-          style={[
-            styles.card,
-            { backgroundColor: cardBackground, borderColor },
-          ]}
-        >
-          <View style={styles.cardHeader}>
-            <View>
-              <ThemedText type="subtitle">{activeGroup.name}</ThemedText>
-              <ThemedText style={[styles.muted, { color: mutedText }]}>
-                {activeGroup.constraints}
-              </ThemedText>
-            </View>
-            <Pressable
-              onPress={() => setShowSelector(true)}
-              style={({ pressed }) => [
-                styles.secondaryButton,
-                { borderColor },
-                pressed && { opacity: 0.85 },
-              ]}
-            >
-              <ThemedText style={[styles.secondaryText, { color: accent }]}>
-                Change
-              </ThemedText>
-            </Pressable>
-          </View>
-
-          <View style={styles.inlineRow}>
-            <View style={[styles.pill, { backgroundColor: accent + "12" }]}>
-              <ThemedText style={[styles.pillText, { color: accent }]}>
-                Mode: {activeGroup.mood}
-              </ThemedText>
-            </View>
-            <View style={[styles.pill, { backgroundColor: "#22c55e1a" }]}>
-              <ThemedText style={[styles.pillText, { color: "#22c55e" }]}>
-                Ready
-              </ThemedText>
-            </View>
-          </View>
-
-          <ThemedText style={styles.label}>Members in this run</ThemedText>
-          <View style={styles.chipRow}>
-            {selectedMembers.map((member) => (
-              <View key={member} style={[styles.memberIcon, { borderColor }]}>
-                <IconSymbol name="person.fill" size={16} color={accent} />
-              </View>
-            ))}
-            <Pressable
-              onPress={() => setShowSelector(true)}
-              style={({ pressed }) => [
-                styles.addChip,
-                { borderColor },
-                pressed && { opacity: 0.85 },
-              ]}
-            >
-              <ThemedText style={[styles.addIcon, { color: accent }]}>
-                +
-              </ThemedText>
-            </Pressable>
-          </View>
-        </View>
 
         <Pressable
           onPress={() => setShowSelector(true)}
@@ -257,7 +192,10 @@ export default function RecommendationsScreen() {
             </View>
 
             <Pressable
-              onPress={() => setShowSelector(false)}
+              onPress={() => {
+                setShowSelector(false);
+                // Here you would trigger the suggestion generation
+              }}
               style={({ pressed }) => [
                 styles.primaryButton,
                 { backgroundColor: accent, marginTop: 12 },
@@ -265,7 +203,7 @@ export default function RecommendationsScreen() {
               ]}
             >
               <ThemedText style={styles.primaryText}>
-                Use these selections
+                Generate suggestion
               </ThemedText>
             </Pressable>
           </ThemedView>
@@ -285,41 +223,7 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   heading: {
-    marginBottom: 4,
-  },
-  subheading: {
-    marginBottom: 10,
-    fontSize: 14,
-  },
-  card: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 8,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 6,
-  },
-  muted: {
-    fontSize: 13,
-  },
-  secondaryButton: {
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  secondaryText: {
-    fontWeight: "700",
-    fontSize: 12,
-  },
-  inlineRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 12,
   },
   pill: {
     paddingHorizontal: 8,
@@ -329,40 +233,38 @@ const styles = StyleSheet.create({
   },
   pillText: {
     fontWeight: "600",
-    fontSize: 12,
+    fontSize: 13,
+    lineHeight: 18,
   },
   label: {
     fontWeight: "700",
-    marginBottom: 5,
-    marginTop: 4,
-    fontSize: 13,
+    marginBottom: 8,
+    marginTop: 6,
+    fontSize: 14,
   },
-  chipRow: {
+  memberGrid: {
     flexDirection: "row",
-    alignItems: "center",
     flexWrap: "wrap",
+    marginTop: 6,
   },
-  memberIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+  memberChip: {
     borderWidth: 1,
+    borderRadius: 10,
+    padding: 8,
+    marginRight: 8,
+    marginBottom: 8,
     alignItems: "center",
-    justifyContent: "center",
-    marginRight: 6,
-    marginBottom: 6,
+    width: "46%",
   },
-  addChip: {
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderRadius: 999,
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    marginBottom: 6,
-  },
-  addIcon: {
-    fontWeight: "800",
+  memberInitial: {
+    fontWeight: "700",
+    marginBottom: 3,
     fontSize: 13,
+  },
+  memberName: {
+    fontSize: 13,
+    fontWeight: "600",
+    lineHeight: 18,
   },
   primaryButton: {
     borderRadius: 10,
@@ -380,6 +282,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 14,
     marginLeft: 6,
+    lineHeight: 20,
   },
   primaryHint: {
     textAlign: "center",
@@ -418,31 +321,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 3,
     fontSize: 14,
+    lineHeight: 20,
   },
   optionCaption: {
     fontSize: 13,
-  },
-  memberGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 6,
-  },
-  memberChip: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 8,
-    marginRight: 8,
-    marginBottom: 8,
-    alignItems: "center",
-    width: "46%",
-  },
-  memberInitial: {
-    fontWeight: "700",
-    marginBottom: 3,
-    fontSize: 13,
-  },
-  memberName: {
-    fontSize: 13,
-    fontWeight: "600",
+    lineHeight: 18,
   },
 });

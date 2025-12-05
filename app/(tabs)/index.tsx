@@ -69,19 +69,7 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.headingRow}>
-          <View>
-            <ThemedText type="title">Groups</ThemedText>
-            <ThemedText style={[styles.subheading, { color: mutedText }]}>
-              Keep your circles ready before you run a suggestion.
-            </ThemedText>
-          </View>
-          <View style={styles.readyWrap}>
-            <View style={[styles.pill, { backgroundColor: accent + "1a" }]}>
-              <ThemedText style={[styles.pillText, { color: accent }]}>
-                3 ready
-              </ThemedText>
-            </View>
-          </View>
+          <ThemedText type="title">Groups</ThemedText>
         </View>
 
         {mockGroups.map((group) => (
@@ -267,19 +255,7 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   headingRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    marginBottom: 10,
-  },
-  readyWrap: {
-    alignSelf: "flex-start",
-    marginTop: 2,
-  },
-  subheading: {
-    marginTop: 4,
-    fontSize: 14,
+    marginBottom: 12,
   },
   pill: {
     paddingHorizontal: 8,
@@ -288,13 +264,13 @@ const styles = StyleSheet.create({
   },
   pillText: {
     fontWeight: "600",
-    fontSize: 12,
+    fontSize: 13,
   },
   card: {
     borderWidth: 1,
     borderRadius: 10,
-    padding: 10,
-    marginBottom: 8,
+    padding: 8,
+    marginBottom: 6,
   },
   cardPressed: {
     transform: [{ scale: 0.99 }],
@@ -303,11 +279,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 5,
+    marginBottom: 4,
   },
   muted: {
-    fontSize: 13,
-    marginBottom: 6,
+    fontSize: 15,
+    marginBottom: 4,
   },
   membersRow: {
     flexDirection: "row",
@@ -329,7 +305,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     fontWeight: "600",
-    fontSize: 12,
+    fontSize: 13,
   },
   metaBlock: {
     alignItems: "flex-end",
@@ -341,15 +317,15 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    marginVertical: 6,
+    marginVertical: 4,
   },
   metaLabel: {
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: "600",
   },
   metaValue: {
     marginTop: 2,
-    fontSize: 11,
+    fontSize: 13,
   },
   fab: {
     position: "absolute",
