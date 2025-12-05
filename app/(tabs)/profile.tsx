@@ -8,136 +8,201 @@ import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 const stats = [
-  { label: "Groups", value: "3" },
-  { label: "Ratings", value: "18" },
-  { label: "Saved picks", value: "9" },
-];
+  { label: "Groups", value: "3", icon: "person.2.fill" },
+  { label: "Ratings", value: "18", icon: "star.fill" },
+  { label: "Saved", value: "9", icon: "bookmark.fill" },
+] as const;
 
 const preferences = [
-  { label: "Diet", value: "Pescatarian + dairy-light" },
-  { label: "Budget", value: "<$30 casual · <$55 dinner" },
-  { label: "Distance", value: "Weekday 3 mi · Weekend 5 mi" },
-  { label: "Ambience", value: "Quiet, cozy, music low" },
-];
+  { label: "Diet", value: "Pescatarian · dairy-light", icon: "leaf.fill" },
+  {
+    label: "Budget",
+    value: "$30 casual · $55 dinner",
+    icon: "creditcard.fill",
+  },
+  {
+    label: "Distance",
+    value: "3 mi weekday · 5 mi weekend",
+    icon: "location.fill",
+  },
+  {
+    label: "Ambience",
+    value: "Quiet, cozy, low music",
+    icon: "speaker.wave.1.fill",
+  },
+] as const;
+
+const actions = [
+  { label: "Edit profile", icon: "pencil" },
+  { label: "Preferences", icon: "slider.horizontal.3" },
+  { label: "Notifications", icon: "bell.fill" },
+  { label: "Settings", icon: "gearshape.fill" },
+] as const;
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
   const accent = Colors[colorScheme ?? "light"].tint;
 
-  const { cardBackground, borderColor, mutedText } = useMemo(() => {
-    const isDark = colorScheme === "dark";
-    return {
-      cardBackground: isDark ? "#1c1f24" : "#f6f7fb",
-      borderColor: isDark ? "#2d3137" : "#e6e8ec",
-      mutedText: isDark ? "#9ea7b3" : "#5b6472",
-    };
-  }, [colorScheme]);
+  const palette = useMemo(
+    () => ({
+      surface: isDark ? "#1a1d21" : "#f8f9fb",
+      surfaceAlt: isDark ? "#22262c" : "#fff",
+      border: isDark ? "#2a2f36" : "#e8eaed",
+      muted: isDark ? "#8b939e" : "#6b7280",
+      subtle: isDark ? "#3a4049" : "#dfe2e6",
+    }),
+    [isDark]
+  );
 
   return (
     <ThemedView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <ThemedText type="title" style={styles.heading}>
-          Profile
-        </ThemedText>
-
-        <View
-          style={[
-            styles.card,
-            { backgroundColor: cardBackground, borderColor },
-          ]}
-        >
-          <View style={styles.profileRow}>
-            <View style={[styles.avatar, { backgroundColor: accent + "1a" }]}>
-              <ThemedText style={[styles.avatarText, { color: accent }]}>
-                M
-              </ThemedText>
-            </View>
-            <View>
-              <ThemedText type="title">Morgan Lee</ThemedText>
-              <ThemedText style={[styles.muted, { color: mutedText }]}>
-                morgan@example.com
-              </ThemedText>
-              <ThemedText style={[styles.muted, { color: mutedText }]}>
-                Joined Jan 2024
-              </ThemedText>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Profile Header */}
+        <View style={styles.header}>
+          <View style={[styles.avatarRing, { borderColor: accent + "40" }]}>
+            <View style={[styles.avatar, { backgroundColor: accent }]}>
+              <ThemedText style={styles.avatarLetter}>M</ThemedText>
             </View>
           </View>
-          <View style={styles.statRow}>
-            {stats.map((stat) => (
-              <View key={stat.label} style={styles.statCard}>
-                <ThemedText style={styles.statValue}>{stat.value}</ThemedText>
-                <ThemedText style={[styles.statLabel, { color: mutedText }]}>
-                  {stat.label}
-                </ThemedText>
-              </View>
-            ))}
-          </View>
+          <ThemedText type="subtitle" style={styles.name}>
+            Morgan Lee
+          </ThemedText>
+          <ThemedText style={[styles.email, { color: palette.muted }]}>
+            morgan@example.com
+          </ThemedText>
         </View>
 
+        {/* Stats Row */}
         <View
           style={[
-            styles.card,
-            { backgroundColor: cardBackground, borderColor },
+            styles.statsRow,
+            { backgroundColor: palette.surface, borderColor: palette.border },
           ]}
         >
-          <ThemedText style={styles.sectionTitle}>Preferences</ThemedText>
-          {preferences.map((pref) => (
-            <View key={pref.label} style={styles.prefRow}>
-              <ThemedText style={styles.prefLabel}>{pref.label}</ThemedText>
-              <ThemedText style={[styles.prefValue, { color: mutedText }]}>
-                {pref.value}
+          {stats.map((stat, i) => (
+            <View
+              key={stat.label}
+              style={[
+                styles.statItem,
+                i < stats.length - 1 && {
+                  borderRightWidth: 1,
+                  borderRightColor: palette.border,
+                },
+              ]}
+            >
+              <IconSymbol name={stat.icon} size={14} color={accent} />
+              <ThemedText style={styles.statValue}>{stat.value}</ThemedText>
+              <ThemedText style={[styles.statLabel, { color: palette.muted }]}>
+                {stat.label}
               </ThemedText>
             </View>
           ))}
         </View>
 
+        {/* Preferences */}
         <View
           style={[
-            styles.card,
+            styles.section,
             {
-              backgroundColor: colorScheme === "dark" ? "#111418" : "#fff",
-              borderColor,
+              backgroundColor: palette.surfaceAlt,
+              borderColor: palette.border,
             },
           ]}
         >
-          <ThemedText style={styles.sectionTitle}>Actions</ThemedText>
-          <Pressable
-            style={({ pressed }) => [
-              styles.primaryButton,
-              { backgroundColor: accent },
-              pressed && { opacity: 0.9 },
-            ]}
-          >
-            <View style={styles.primaryRow}>
-              <IconSymbol name="sparkles" size={22} color="#fff" />
-              <ThemedText style={styles.primaryText}>
-                Update onboarding
-              </ThemedText>
+          <ThemedText style={[styles.sectionLabel, { color: palette.muted }]}>
+            Preferences
+          </ThemedText>
+          {preferences.map((pref, i) => (
+            <View
+              key={pref.label}
+              style={[
+                styles.prefRow,
+                i < preferences.length - 1 && {
+                  borderBottomWidth: 1,
+                  borderBottomColor: palette.subtle,
+                },
+              ]}
+            >
+              <View
+                style={[styles.prefIcon, { backgroundColor: accent + "14" }]}
+              >
+                <IconSymbol name={pref.icon} size={14} color={accent} />
+              </View>
+              <View style={styles.prefText}>
+                <ThemedText style={styles.prefLabel}>{pref.label}</ThemedText>
+                <ThemedText
+                  style={[styles.prefValue, { color: palette.muted }]}
+                >
+                  {pref.value}
+                </ThemedText>
+              </View>
             </View>
-            <ThemedText style={styles.primaryHint}>
-              Refresh cuisine, spice, ambience, budget, and distance
-              preferences.
-            </ThemedText>
-          </Pressable>
-
-          <Pressable
-            style={({ pressed }) => [
-              styles.secondaryButton,
-              { borderColor },
-              pressed && { opacity: 0.88 },
-            ]}
-          >
-            <View style={styles.inlineRow}>
-              <IconSymbol name="book.fill" size={20} color={accent} />
-              <ThemedText style={[styles.secondaryText, { color: accent }]}>
-                Notification settings
-              </ThemedText>
-            </View>
-            <ThemedText style={[styles.muted, { color: mutedText }]}>
-              Push prompts for invites and post-visit ratings.
-            </ThemedText>
-          </Pressable>
+          ))}
         </View>
+
+        {/* Quick Actions */}
+        <View style={styles.actionsGrid}>
+          {actions.map((action) => (
+            <Pressable
+              key={action.label}
+              style={({ pressed }) => [
+                styles.actionBtn,
+                {
+                  backgroundColor: palette.surface,
+                  borderColor: palette.border,
+                },
+                pressed && { opacity: 0.8, transform: [{ scale: 0.97 }] },
+              ]}
+            >
+              <View
+                style={[
+                  styles.actionIcon,
+                  { backgroundColor: isDark ? "#2a2f36" : "#e8ecf1" },
+                ]}
+              >
+                <IconSymbol
+                  name={action.icon}
+                  size={18}
+                  color={isDark ? "#d1d5db" : "#4b5563"}
+                />
+              </View>
+              <ThemedText style={styles.actionLabel}>{action.label}</ThemedText>
+            </Pressable>
+          ))}
+        </View>
+
+        {/* Update Onboarding CTA */}
+        <Pressable
+          style={({ pressed }) => [
+            styles.cta,
+            { backgroundColor: accent },
+            pressed && { opacity: 0.9 },
+          ]}
+        >
+          <IconSymbol name="sparkles" size={18} color="#fff" />
+          <View style={styles.ctaText}>
+            <ThemedText style={styles.ctaTitle}>Update onboarding</ThemedText>
+            <ThemedText style={styles.ctaSub}>
+              Refresh your taste profile
+            </ThemedText>
+          </View>
+          <IconSymbol name="chevron.right" size={16} color="#fff" />
+        </Pressable>
+
+        {/* Danger Zone */}
+        <Pressable
+          style={({ pressed }) => [
+            styles.dangerBtn,
+            { borderColor: "#ef4444" + "40" },
+            pressed && { opacity: 0.8 },
+          ]}
+        >
+          <ThemedText style={styles.dangerText}>Sign out</ThemedText>
+        </Pressable>
       </ScrollView>
     </ThemedView>
   );
@@ -147,109 +212,161 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollContent: {
+  scroll: {
     padding: 16,
-    paddingTop: 44,
-    paddingBottom: 60,
+    paddingTop: 52,
+    paddingBottom: 40,
   },
-  heading: {
-    marginBottom: 12,
-  },
-  card: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 8,
-    marginBottom: 6,
-  },
-  profileRow: {
-    flexDirection: "row",
+  header: {
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 16,
+  },
+  avatarRing: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
   },
   avatar: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarLetter: {
+    color: "#fff",
+    fontSize: 26,
+    fontWeight: "700",
+  },
+  name: {
+    fontWeight: "700",
+    fontSize: 18,
+    marginBottom: 2,
+  },
+  email: {
+    fontSize: 13,
+  },
+  statsRow: {
+    flexDirection: "row",
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 12,
+    overflow: "hidden",
+  },
+  statItem: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 12,
+    gap: 2,
+  },
+  statValue: {
+    fontSize: 17,
+    fontWeight: "700",
+    marginTop: 4,
+  },
+  statLabel: {
+    fontSize: 11,
+    fontWeight: "500",
+    textTransform: "uppercase",
+    letterSpacing: 0.4,
+  },
+  section: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 12,
+    marginBottom: 12,
+  },
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 10,
+  },
+  prefRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  prefIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 7,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 10,
   },
-  avatarText: {
-    fontSize: 22,
-    fontWeight: "800",
-  },
-  muted: {
-    fontSize: 14,
-  },
-  statRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  statCard: {
+  prefText: {
     flex: 1,
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 8,
-    alignItems: "center",
-    marginRight: 6,
-  },
-  statValue: {
-    fontWeight: "800",
-    fontSize: 18,
-  },
-  statLabel: {
-    fontSize: 13,
-    marginTop: 4,
-  },
-  sectionTitle: {
-    fontWeight: "700",
-    marginBottom: 8,
-    fontSize: 16,
-  },
-  prefRow: {
-    marginBottom: 10,
   },
   prefLabel: {
-    fontWeight: "700",
-    marginBottom: 4,
-    fontSize: 14,
+    fontSize: 13,
+    fontWeight: "600",
+    marginBottom: 1,
   },
   prefValue: {
-    fontSize: 14,
+    fontSize: 12,
   },
-  primaryButton: {
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 8,
+  actionsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 12,
   },
-  primaryRow: {
+  actionBtn: {
+    width: "48%",
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 4,
+    borderRadius: 10,
+    borderWidth: 1,
+    padding: 10,
+    gap: 8,
   },
-  primaryText: {
+  actionIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  actionLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    flex: 1,
+  },
+  cta: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 12,
+    padding: 14,
+    gap: 10,
+    marginBottom: 12,
+  },
+  ctaText: {
+    flex: 1,
+  },
+  ctaTitle: {
     color: "#fff",
     fontWeight: "700",
     fontSize: 14,
-    marginLeft: 6,
   },
-  primaryHint: {
-    color: "#e0f2ff",
-    fontSize: 13,
+  ctaSub: {
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 12,
   },
-  secondaryButton: {
+  dangerBtn: {
     borderWidth: 1,
     borderRadius: 10,
-    padding: 10,
-    marginBottom: 6,
-  },
-  secondaryText: {
-    fontWeight: "700",
-    fontSize: 14,
-  },
-  inlineRow: {
-    flexDirection: "row",
+    paddingVertical: 10,
     alignItems: "center",
-    marginBottom: 4,
+  },
+  dangerText: {
+    color: "#ef4444",
+    fontWeight: "600",
+    fontSize: 13,
   },
 });

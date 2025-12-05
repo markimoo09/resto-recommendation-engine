@@ -19,28 +19,38 @@ const mockPlaces = [
   { name: "Pizzeria Lola", detail: "Pizza · 2.1 mi" },
 ];
 
+const quickTags = [
+  "Great service",
+  "Spicy",
+  "Cozy vibe",
+  "Good value",
+  "Quiet",
+];
+
 export default function ReviewsScreen() {
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
   const accent = Colors[colorScheme ?? "light"].tint;
   const [selectedLocation, setSelectedLocation] = useState<
     (typeof mockPlaces)[0] | null
   >(null);
   const [rating, setRating] = useState(4);
-  const [notes, setNotes] = useState(
-    "Loved the broth, service was quick, spice was just right."
-  );
+  const [notes, setNotes] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [photoUri, setPhotoUri] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const { cardBackground, borderColor, mutedText, inputBg } = useMemo(() => {
-    const isDark = colorScheme === "dark";
-    return {
-      cardBackground: isDark ? "#1c1f24" : "#f6f7fb",
-      borderColor: isDark ? "#2d3137" : "#e6e8ec",
-      mutedText: isDark ? "#9ea7b3" : "#5b6472",
-      inputBg: isDark ? "#0f1115" : "#fff",
-    };
-  }, [colorScheme]);
+  const palette = useMemo(
+    () => ({
+      surface: isDark ? "#1a1d21" : "#f8f9fb",
+      surfaceAlt: isDark ? "#22262c" : "#fff",
+      border: isDark ? "#2a2f36" : "#e8eaed",
+      muted: isDark ? "#8b939e" : "#6b7280",
+      subtle: isDark ? "#3a4049" : "#dfe2e6",
+      inputBg: isDark ? "#0d0f12" : "#fff",
+    }),
+    [isDark]
+  );
 
   const filteredPlaces = searchQuery
     ? mockPlaces.filter((place) =>
@@ -48,174 +58,278 @@ export default function ReviewsScreen() {
       )
     : [];
 
+  const toggleTag = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const handleSelectPlace = (place: (typeof mockPlaces)[0]) => {
+    setSelectedLocation(place);
+    setSearchQuery(place.name);
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
-        <ThemedText type="title" style={styles.heading}>
-          Rate
-        </ThemedText>
+        {/* Header */}
+        <View style={styles.header}>
+          <ThemedText type="title">Rate</ThemedText>
+          <ThemedText style={[styles.headerSub, { color: palette.muted }]}>
+            Share your dining experience
+          </ThemedText>
+        </View>
 
+        {/* Location Search */}
         <View style={styles.section}>
-          <ThemedText style={styles.label}>Location</ThemedText>
-          <TextInput
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder="Search for a place"
-            placeholderTextColor={mutedText}
+          <ThemedText style={[styles.sectionLabel, { color: palette.muted }]}>
+            LOCATION
+          </ThemedText>
+          <View
             style={[
-              styles.input,
+              styles.searchBox,
               {
-                borderColor,
-                backgroundColor: inputBg,
-                color: Colors[colorScheme ?? "light"].text,
+                borderColor: palette.border,
+                backgroundColor: palette.inputBg,
               },
             ]}
-          />
-          {filteredPlaces.length > 0 && (
-            <View style={[styles.suggestionList, { borderColor }]}>
-              {filteredPlaces.map((place) => {
-                const selected = selectedLocation?.name === place.name;
-                return (
-                  <Pressable
-                    key={place.name}
-                    onPress={() => setSelectedLocation(place)}
-                    style={({ pressed }) => [
-                      styles.suggestion,
-                      {
-                        backgroundColor: selected ? accent + "12" : undefined,
-                      },
-                      pressed && { opacity: 0.88 },
+          >
+            <IconSymbol name="location.fill" size={16} color={palette.muted} />
+            <TextInput
+              value={searchQuery}
+              onChangeText={(text) => {
+                setSearchQuery(text);
+                if (!text) setSelectedLocation(null);
+              }}
+              placeholder="Search for a restaurant"
+              placeholderTextColor={palette.muted}
+              style={[
+                styles.searchInput,
+                { color: Colors[colorScheme ?? "light"].text },
+              ]}
+            />
+          </View>
+          {filteredPlaces.length > 0 && !selectedLocation && (
+            <View
+              style={[
+                styles.suggestionList,
+                {
+                  backgroundColor: palette.surfaceAlt,
+                  borderColor: palette.border,
+                },
+              ]}
+            >
+              {filteredPlaces.map((place) => (
+                <Pressable
+                  key={place.name}
+                  onPress={() => handleSelectPlace(place)}
+                  style={({ pressed }) => [
+                    styles.suggestion,
+                    pressed && { backgroundColor: palette.surface },
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.placeIcon,
+                      { backgroundColor: accent + "14" },
                     ]}
                   >
-                    <View>
-                      <ThemedText style={styles.optionTitle}>
-                        {place.name}
-                      </ThemedText>
-                      <ThemedText
-                        style={[styles.optionCaption, { color: mutedText }]}
-                      >
-                        {place.detail}
-                      </ThemedText>
-                    </View>
-                    {selected && (
-                      <IconSymbol
-                        name="chevron.right"
-                        size={18}
-                        color={accent}
-                      />
-                    )}
-                  </Pressable>
-                );
-              })}
+                    <IconSymbol name="location.fill" size={14} color={accent} />
+                  </View>
+                  <View style={styles.placeInfo}>
+                    <ThemedText style={styles.placeName}>
+                      {place.name}
+                    </ThemedText>
+                    <ThemedText
+                      style={[styles.placeDetail, { color: palette.muted }]}
+                    >
+                      {place.detail}
+                    </ThemedText>
+                  </View>
+                </Pressable>
+              ))}
             </View>
           )}
         </View>
 
+        {/* Star Rating */}
         <View style={styles.section}>
-          <ThemedText style={styles.label}>Photo</ThemedText>
+          <ThemedText style={[styles.sectionLabel, { color: palette.muted }]}>
+            RATING
+          </ThemedText>
+          <View
+            style={[
+              styles.ratingCard,
+              { backgroundColor: palette.surface, borderColor: palette.border },
+            ]}
+          >
+            <View style={styles.starsRow}>
+              {[1, 2, 3, 4, 5].map((value) => (
+                <Pressable
+                  key={value}
+                  onPress={() => setRating(value)}
+                  style={({ pressed }) => [
+                    styles.starBtn,
+                    pressed && { transform: [{ scale: 0.9 }] },
+                  ]}
+                >
+                  <IconSymbol
+                    name="star.fill"
+                    size={36}
+                    color={value <= rating ? "#f59e0b" : palette.subtle}
+                  />
+                </Pressable>
+              ))}
+            </View>
+            <ThemedText style={[styles.ratingLabel, { color: palette.muted }]}>
+              {rating === 5
+                ? "Outstanding!"
+                : rating === 4
+                ? "Great experience"
+                : rating === 3
+                ? "It was okay"
+                : rating === 2
+                ? "Below expectations"
+                : "Not recommended"}
+            </ThemedText>
+          </View>
+        </View>
+
+        {/* Photo */}
+        <View style={styles.section}>
+          <ThemedText style={[styles.sectionLabel, { color: palette.muted }]}>
+            PHOTO (OPTIONAL)
+          </ThemedText>
           <Pressable
             onPress={() =>
-              setPhotoUri((prev) => (prev ? "" : "dining_room.jpg"))
+              setPhotoUri((prev) => (prev ? "" : "dish_photo.jpg"))
             }
             style={({ pressed }) => [
-              styles.photoSquare,
+              styles.photoBox,
               {
-                borderColor,
-                backgroundColor: photoUri ? accent + "12" : inputBg,
+                borderColor: photoUri ? accent : palette.border,
+                backgroundColor: photoUri ? accent + "08" : palette.inputBg,
               },
               pressed && { opacity: 0.9 },
             ]}
           >
             {photoUri ? (
               <View style={styles.photoFilled}>
-                <IconSymbol name="paperplane.fill" color={accent} size={24} />
-                <ThemedText style={[styles.photoText, { color: accent }]}>
+                <View
+                  style={[
+                    styles.photoThumb,
+                    { backgroundColor: accent + "20" },
+                  ]}
+                >
+                  <IconSymbol name="checkmark" color={accent} size={24} />
+                </View>
+                <ThemedText style={[styles.photoName, { color: accent }]}>
                   {photoUri}
+                </ThemedText>
+                <ThemedText
+                  style={[styles.photoHint, { color: palette.muted }]}
+                >
+                  Tap to remove
                 </ThemedText>
               </View>
             ) : (
               <View style={styles.photoEmpty}>
-                <IconSymbol name="paperplane.fill" color={accent} size={26} />
-                <ThemedText style={[styles.photoText, { color: accent }]}>
-                  Add image
+                <View
+                  style={[
+                    styles.photoIconBg,
+                    { backgroundColor: palette.surface },
+                  ]}
+                >
+                  <IconSymbol name="paperplane.fill" color={accent} size={22} />
+                </View>
+                <ThemedText style={[styles.photoLabel, { color: accent }]}>
+                  Add a photo
                 </ThemedText>
                 <ThemedText
-                  style={[styles.optionCaption, { color: mutedText }]}
+                  style={[styles.photoHint, { color: palette.muted }]}
                 >
-                  Press to attach
+                  Tap to attach
                 </ThemedText>
               </View>
             )}
           </Pressable>
         </View>
 
+        {/* Quick Tags */}
         <View style={styles.section}>
-          <View style={styles.starsRow}>
-            {[1, 2, 3, 4, 5].map((value) => (
-              <Pressable
-                key={value}
-                onPress={() => setRating(value)}
-                style={({ pressed }) => [
-                  styles.starButton,
-                  pressed && { transform: [{ scale: 0.96 }] },
-                ]}
-              >
-                <IconSymbol
-                  name="star.fill"
-                  size={32}
-                  color={value <= rating ? accent : borderColor}
-                />
-              </Pressable>
-            ))}
+          <ThemedText style={[styles.sectionLabel, { color: palette.muted }]}>
+            QUICK TAGS
+          </ThemedText>
+          <View style={styles.tagsWrap}>
+            {quickTags.map((tag) => {
+              const active = selectedTags.includes(tag);
+              return (
+                <Pressable
+                  key={tag}
+                  onPress={() => toggleTag(tag)}
+                  style={({ pressed }) => [
+                    styles.tag,
+                    {
+                      backgroundColor: active ? accent + "18" : palette.surface,
+                      borderColor: active ? accent : palette.border,
+                    },
+                    pressed && { opacity: 0.85 },
+                  ]}
+                >
+                  <ThemedText
+                    style={[
+                      styles.tagText,
+                      { color: active ? accent : palette.muted },
+                    ]}
+                  >
+                    {tag}
+                  </ThemedText>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
 
+        {/* Notes */}
         <View style={styles.section}>
-          <ThemedText style={styles.label}>Notes</ThemedText>
+          <ThemedText style={[styles.sectionLabel, { color: palette.muted }]}>
+            NOTES (OPTIONAL)
+          </ThemedText>
           <TextInput
             value={notes}
             onChangeText={setNotes}
             multiline
-            numberOfLines={4}
-            placeholder="Tell us what stood out — taste, ambience, service"
-            placeholderTextColor={mutedText}
+            numberOfLines={3}
+            placeholder="What stood out? Taste, service, ambience..."
+            placeholderTextColor={palette.muted}
             style={[
               styles.textArea,
               {
-                borderColor,
-                backgroundColor: inputBg,
+                borderColor: palette.border,
+                backgroundColor: palette.inputBg,
                 color: Colors[colorScheme ?? "light"].text,
               },
             ]}
           />
-          <View style={styles.tagRow}>
-            {["Service", "Spice level", "Ambience", "Price"].map((tag) => (
-              <View
-                key={tag}
-                style={[styles.tag, { backgroundColor: accent + "12" }]}
-              >
-                <ThemedText style={[styles.tagText, { color: accent }]}>
-                  {tag}
-                </ThemedText>
-              </View>
-            ))}
-          </View>
         </View>
       </ScrollView>
 
-      <Pressable
-        style={({ pressed }) => [
-          styles.primaryButton,
-          pressed && styles.primaryButtonPressed,
-        ]}
-      >
-        <View style={[styles.buttonContent, { backgroundColor: accent }]}>
-          <ThemedText style={styles.primaryText}>Submit rating</ThemedText>
-        </View>
-      </Pressable>
+      {/* Submit Button */}
+      <View style={styles.buttonArea}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.submitBtn,
+            { backgroundColor: accent },
+            pressed && { opacity: 0.9, transform: [{ scale: 0.98 }] },
+          ]}
+        >
+          <IconSymbol name="star.fill" size={18} color="#fff" />
+          <ThemedText style={styles.submitText}>Submit rating</ThemedText>
+        </Pressable>
+      </View>
     </ThemedView>
   );
 }
@@ -224,61 +338,96 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollContent: {
+  scroll: {
     padding: 16,
-    paddingTop: 44,
-    paddingBottom: 100,
+    paddingTop: 52,
+    paddingBottom: 110,
   },
-  heading: {
-    marginBottom: 12,
+  header: {
+    marginBottom: 20,
+  },
+  headerSub: {
+    fontSize: 13,
+    marginTop: 2,
   },
   section: {
-    marginBottom: 12,
+    marginBottom: 18,
   },
-  label: {
-    fontWeight: "700",
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    letterSpacing: 0.5,
     marginBottom: 8,
-    fontSize: 14,
   },
-  input: {
+  searchBox: {
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    fontSize: 15,
-    marginBottom: 6,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    gap: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    padding: 0,
   },
   suggestionList: {
     borderWidth: 1,
-    borderRadius: 10,
-    padding: 6,
-    marginBottom: 6,
+    borderRadius: 12,
+    marginTop: 6,
+    overflow: "hidden",
   },
   suggestion: {
-    paddingVertical: 8,
-    paddingHorizontal: 6,
-    borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    padding: 10,
+    gap: 10,
   },
-  optionTitle: {
-    fontWeight: "700",
-    marginBottom: 4,
-    fontSize: 15,
-    lineHeight: 20,
-  },
-  optionCaption: {
-    fontSize: 14,
-    lineHeight: 18,
-  },
-  photoSquare: {
-    width: "100%",
-    height: 160,
-    borderWidth: 1,
-    borderRadius: 10,
+  placeIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
+  },
+  placeInfo: {
+    flex: 1,
+  },
+  placeName: {
+    fontWeight: "600",
+    fontSize: 14,
+    marginBottom: 1,
+  },
+  placeDetail: {
+    fontSize: 12,
+  },
+  ratingCard: {
+    borderWidth: 1,
+    borderRadius: 14,
+    padding: 16,
+    alignItems: "center",
+  },
+  starsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 8,
+  },
+  starBtn: {
+    padding: 2,
+  },
+  ratingLabel: {
+    fontSize: 13,
+    fontWeight: "500",
+  },
+  photoBox: {
+    borderWidth: 1,
+    borderRadius: 14,
+    borderStyle: "dashed",
+    padding: 20,
+    alignItems: "center",
   },
   photoEmpty: {
     alignItems: "center",
@@ -286,73 +435,82 @@ const styles = StyleSheet.create({
   photoFilled: {
     alignItems: "center",
   },
-  photoText: {
-    fontWeight: "700",
-    marginTop: 4,
-    fontSize: 15,
+  photoIconBg: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8,
+  },
+  photoThumb: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8,
+  },
+  photoLabel: {
+    fontWeight: "600",
+    fontSize: 14,
+    marginBottom: 2,
+  },
+  photoName: {
+    fontWeight: "600",
+    fontSize: 14,
+    marginBottom: 2,
+  },
+  photoHint: {
+    fontSize: 12,
+  },
+  tagsWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  tag: {
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  tagText: {
+    fontWeight: "600",
+    fontSize: 13,
   },
   textArea: {
     borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    fontSize: 15,
-    minHeight: 100,
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 14,
+    minHeight: 80,
     textAlignVertical: "top",
   },
-  tagRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 8,
-  },
-  tag: {
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginRight: 6,
-    marginBottom: 6,
-  },
-  tagText: {
-    fontWeight: "700",
-    fontSize: 13,
-  },
-  starsRow: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  starButton: {
-    marginRight: 5,
-  },
-  primaryButton: {
+  buttonArea: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     padding: 16,
-    paddingBottom: 34,
-    paddingTop: 16,
-    backgroundColor: "transparent",
+    paddingBottom: 32,
   },
-  primaryButtonPressed: {
-    opacity: 0.9,
-    transform: [{ scale: 0.98 }],
-  },
-  buttonContent: {
-    borderRadius: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+  submitBtn: {
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 14,
+    paddingVertical: 14,
+    gap: 8,
     shadowColor: "#000",
     shadowOpacity: 0.12,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 3,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
-  primaryText: {
+  submitText: {
     color: "#fff",
     fontWeight: "700",
     fontSize: 15,
-    letterSpacing: 0.2,
-    marginLeft: 0,
   },
 });

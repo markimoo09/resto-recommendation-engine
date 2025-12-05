@@ -38,22 +38,32 @@ const mockGroups = [
   },
 ];
 
+const modeColors: Record<string, string> = {
+  Explore: "#10b981",
+  "Safety-first": "#f59e0b",
+  Balanced: "#6366f1",
+};
+
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
   const accent = Colors[colorScheme ?? "light"].tint;
   const [showModal, setShowModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
   const [newMember, setNewMember] = useState("");
   const [draftMembers, setDraftMembers] = useState<string[]>(["You"]);
 
-  const { cardBackground, borderColor, mutedText } = useMemo(() => {
-    const isDark = colorScheme === "dark";
-    return {
-      cardBackground: isDark ? "#1c1f24" : "#f6f7fb",
-      borderColor: isDark ? "#2d3137" : "#e6e8ec",
-      mutedText: isDark ? "#9ea7b3" : "#5b6472",
-    };
-  }, [colorScheme]);
+  const palette = useMemo(
+    () => ({
+      surface: isDark ? "#1a1d21" : "#f8f9fb",
+      surfaceAlt: isDark ? "#22262c" : "#fff",
+      border: isDark ? "#2a2f36" : "#e8eaed",
+      muted: isDark ? "#8b939e" : "#6b7280",
+      subtle: isDark ? "#3a4049" : "#dfe2e6",
+      inputBg: isDark ? "#0d0f12" : "#fff",
+    }),
+    [isDark]
+  );
 
   const handleAddMember = () => {
     const trimmed = newMember.trim();
@@ -62,127 +72,211 @@ export default function HomeScreen() {
     setNewMember("");
   };
 
+  const resetModal = () => {
+    setShowModal(false);
+    setNewGroupName("");
+    setNewMember("");
+    setDraftMembers(["You"]);
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.headingRow}>
+        {/* Header */}
+        <View style={styles.header}>
           <ThemedText type="title">Groups</ThemedText>
+          <View style={[styles.countBadge, { backgroundColor: accent + "18" }]}>
+            <ThemedText style={[styles.countText, { color: accent }]}>
+              {mockGroups.length}
+            </ThemedText>
+          </View>
         </View>
 
-        {mockGroups.map((group) => (
-          <Pressable
-            key={group.name}
-            style={({ pressed }) => [
-              styles.card,
-              {
-                backgroundColor: cardBackground,
-                borderColor,
-              },
-              pressed && styles.cardPressed,
-            ]}
-          >
-            <View style={styles.cardTop}>
+        {/* Group Cards */}
+        {mockGroups.map((group) => {
+          const modeColor = modeColors[group.mode] || accent;
+          return (
+            <Pressable
+              key={group.name}
+              style={({ pressed }) => [
+                styles.card,
+                {
+                  backgroundColor: palette.surfaceAlt,
+                  borderColor: palette.border,
+                },
+                pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] },
+              ]}
+            >
+              {/* Card Header */}
               <View style={styles.cardHeader}>
-                <ThemedText type="subtitle">{group.name}</ThemedText>
-                <View style={[styles.pill, { backgroundColor: accent + "1a" }]}>
-                  <ThemedText style={[styles.pillText, { color: accent }]}>
-                    {group.mode}
+                <View
+                  style={[
+                    styles.groupIcon,
+                    { backgroundColor: modeColor + "18" },
+                  ]}
+                >
+                  <ThemedText
+                    style={[styles.groupIconText, { color: modeColor }]}
+                  >
+                    {group.name.charAt(0)}
+                  </ThemedText>
+                </View>
+                <View style={styles.cardTitleArea}>
+                  <ThemedText style={styles.cardTitle}>{group.name}</ThemedText>
+                  <View
+                    style={[
+                      styles.modePill,
+                      { backgroundColor: modeColor + "14" },
+                    ]}
+                  >
+                    <View
+                      style={[styles.modeDot, { backgroundColor: modeColor }]}
+                    />
+                    <ThemedText style={[styles.modeText, { color: modeColor }]}>
+                      {group.mode}
+                    </ThemedText>
+                  </View>
+                </View>
+              </View>
+
+              {/* Focus/Constraints */}
+              <ThemedText style={[styles.focus, { color: palette.muted }]}>
+                {group.focus}
+              </ThemedText>
+
+              {/* Footer: Avatars + Last Pick */}
+              <View
+                style={[styles.cardFooter, { borderTopColor: palette.subtle }]}
+              >
+                <View style={styles.avatarStack}>
+                  {group.members.slice(0, 4).map((member, i) => (
+                    <View
+                      key={member}
+                      style={[
+                        styles.avatar,
+                        {
+                          backgroundColor: isDark ? "#2d3238" : "#e8ecf1",
+                          borderColor: palette.surfaceAlt,
+                          marginLeft: i > 0 ? -8 : 0,
+                          zIndex: group.members.length - i,
+                        },
+                      ]}
+                    >
+                      <ThemedText
+                        style={[styles.avatarText, { color: palette.muted }]}
+                      >
+                        {member.charAt(0)}
+                      </ThemedText>
+                    </View>
+                  ))}
+                  {group.members.length > 4 && (
+                    <View
+                      style={[
+                        styles.avatar,
+                        styles.avatarMore,
+                        {
+                          backgroundColor: accent + "18",
+                          borderColor: palette.surfaceAlt,
+                          marginLeft: -8,
+                        },
+                      ]}
+                    >
+                      <ThemedText
+                        style={[styles.avatarText, { color: accent }]}
+                      >
+                        +{group.members.length - 4}
+                      </ThemedText>
+                    </View>
+                  )}
+                </View>
+                <View style={styles.lastPick}>
+                  <IconSymbol
+                    name="book.fill"
+                    size={12}
+                    color={palette.muted}
+                  />
+                  <ThemedText
+                    style={[styles.lastPickText, { color: palette.muted }]}
+                  >
+                    {group.lastRestaurant}
                   </ThemedText>
                 </View>
               </View>
-              <ThemedText style={[styles.focus, { color: mutedText }]}>
-                {group.focus}
-              </ThemedText>
-            </View>
-            <View style={[styles.cardBottom, { borderTopColor: borderColor }]}>
-              <View style={styles.avatarRow}>
-                {group.members.map((member) => (
-                  <View
-                    key={member}
-                    style={[
-                      styles.avatar,
-                      {
-                        borderColor,
-                        backgroundColor:
-                          colorScheme === "dark" ? "#262a31" : "#fff",
-                      },
-                    ]}
-                  >
-                    <ThemedText style={styles.avatarText}>
-                      {member.charAt(0)}
-                    </ThemedText>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.lastPick}>
-                <IconSymbol name="book.fill" size={14} color={mutedText} />
-                <ThemedText
-                  style={[
-                    styles.lastPickText,
-                    { color: mutedText, marginLeft: 4 },
-                  ]}
-                >
-                  {group.lastRestaurant}
-                </ThemedText>
-              </View>
-            </View>
-          </Pressable>
-        ))}
+            </Pressable>
+          );
+        })}
       </ScrollView>
 
+      {/* FAB */}
       <Pressable
         onPress={() => setShowModal(true)}
         style={({ pressed }) => [
           styles.fab,
           { backgroundColor: accent },
-          pressed && { opacity: 0.9 },
+          pressed && { opacity: 0.9, transform: [{ scale: 0.96 }] },
         ]}
       >
-        <IconSymbol name="sparkles" color="#fff" size={22} />
+        <IconSymbol name="sparkles" color="#fff" size={18} />
         <ThemedText style={styles.fabText}>New group</ThemedText>
       </Pressable>
 
+      {/* Modal */}
       <Modal
         visible={showModal}
         animationType="slide"
         transparent
-        onRequestClose={() => setShowModal(false)}
+        onRequestClose={resetModal}
       >
-        <View style={styles.modalBackdrop}>
-          <ThemedView
+        <Pressable style={styles.backdrop} onPress={resetModal}>
+          <Pressable
             style={[
-              styles.modalCard,
-              {
-                backgroundColor: colorScheme === "dark" ? "#111418" : "#fff",
-                borderColor,
-              },
+              styles.sheet,
+              { backgroundColor: isDark ? "#111418" : "#fff" },
             ]}
+            onPress={(e) => e.stopPropagation()}
           >
-            <ThemedText type="subtitle" style={styles.modalTitle}>
+            {/* Handle */}
+            <View style={styles.handleRow}>
+              <View
+                style={[styles.handle, { backgroundColor: palette.subtle }]}
+              />
+            </View>
+
+            <ThemedText type="subtitle" style={styles.sheetTitle}>
               Create a group
             </ThemedText>
 
-            <ThemedText style={styles.label}>Group name</ThemedText>
+            {/* Name Input */}
+            <ThemedText style={[styles.label, { color: palette.muted }]}>
+              GROUP NAME
+            </ThemedText>
             <TextInput
               value={newGroupName}
               onChangeText={setNewGroupName}
               placeholder="Brunch crew"
-              placeholderTextColor={mutedText}
+              placeholderTextColor={palette.muted}
               style={[
                 styles.input,
-                { borderColor, color: Colors[colorScheme ?? "light"].text },
+                {
+                  borderColor: palette.border,
+                  backgroundColor: palette.inputBg,
+                  color: Colors[colorScheme ?? "light"].text,
+                },
               ]}
             />
 
-            <ThemedText style={styles.label}>Add people</ThemedText>
-            <View style={[styles.chipRow, { borderColor }]}>
+            {/* Members */}
+            <ThemedText style={[styles.label, { color: palette.muted }]}>
+              MEMBERS
+            </ThemedText>
+            <View style={styles.chipWrap}>
               {draftMembers.map((member) => (
                 <View
                   key={member}
-                  style={[styles.chip, { backgroundColor: accent + "12" }]}
+                  style={[styles.chip, { backgroundColor: accent + "14" }]}
                 >
                   <ThemedText style={[styles.chipText, { color: accent }]}>
                     {member}
@@ -191,58 +285,64 @@ export default function HomeScreen() {
               ))}
             </View>
 
-            <View style={styles.inlineRow}>
+            <View style={styles.addRow}>
               <TextInput
                 value={newMember}
                 onChangeText={setNewMember}
                 placeholder="Name or handle"
-                placeholderTextColor={mutedText}
+                placeholderTextColor={palette.muted}
                 style={[
                   styles.input,
                   styles.flex1,
-                  { borderColor, color: Colors[colorScheme ?? "light"].text },
+                  {
+                    borderColor: palette.border,
+                    backgroundColor: palette.inputBg,
+                    color: Colors[colorScheme ?? "light"].text,
+                    marginBottom: 0,
+                  },
                 ]}
               />
               <Pressable
                 onPress={handleAddMember}
                 style={({ pressed }) => [
-                  styles.addButton,
+                  styles.addBtn,
                   { backgroundColor: accent },
                   pressed && { opacity: 0.9 },
                 ]}
               >
-                <ThemedText style={styles.addButtonText}>Add</ThemedText>
+                <ThemedText style={styles.addBtnText}>Add</ThemedText>
               </Pressable>
             </View>
 
-            <View style={styles.modalActions}>
+            {/* Actions */}
+            <View style={styles.sheetActions}>
               <Pressable
-                onPress={() => setShowModal(false)}
+                onPress={resetModal}
                 style={({ pressed }) => [
-                  styles.secondaryButton,
-                  { borderColor },
+                  styles.cancelBtn,
+                  { borderColor: palette.border },
                   pressed && { opacity: 0.85 },
                 ]}
               >
                 <ThemedText
-                  style={[styles.secondaryText, { color: mutedText }]}
+                  style={[styles.cancelText, { color: palette.muted }]}
                 >
                   Cancel
                 </ThemedText>
               </Pressable>
               <Pressable
-                onPress={() => setShowModal(false)}
+                onPress={resetModal}
                 style={({ pressed }) => [
-                  styles.primaryButton,
+                  styles.saveBtn,
                   { backgroundColor: accent },
                   pressed && { opacity: 0.9 },
                 ]}
               >
-                <ThemedText style={styles.primaryText}>Save</ThemedText>
+                <ThemedText style={styles.saveText}>Create group</ThemedText>
               </Pressable>
             </View>
-          </ThemedView>
-        </View>
+          </Pressable>
+        </Pressable>
       </Modal>
     </ThemedView>
   );
@@ -252,188 +352,229 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollContent: {
+  scroll: {
     padding: 16,
-    paddingTop: 44,
-    paddingBottom: 120,
+    paddingTop: 52,
+    paddingBottom: 100,
   },
-  headingRow: {
-    marginBottom: 12,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    gap: 8,
   },
-  pill: {
+  countBadge: {
     paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 999,
+    paddingVertical: 2,
+    borderRadius: 10,
   },
-  pillText: {
-    fontWeight: "600",
+  countText: {
     fontSize: 13,
+    fontWeight: "700",
   },
   card: {
     borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 8,
-  },
-  cardPressed: {
-    transform: [{ scale: 0.99 }],
-  },
-  cardTop: {
+    borderRadius: 14,
+    padding: 12,
     marginBottom: 10,
   },
   cardHeader: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 6,
+    marginBottom: 8,
   },
-  focus: {
-    fontSize: 13,
-    lineHeight: 18,
+  groupIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
   },
-  cardBottom: {
+  groupIconText: {
+    fontSize: 18,
+    fontWeight: "700",
+  },
+  cardTitleArea: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingTop: 8,
+  },
+  cardTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  modePill: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    gap: 5,
+  },
+  modeDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  modeText: {
+    fontSize: 11,
+    fontWeight: "600",
+  },
+  focus: {
+    fontSize: 12,
+    lineHeight: 17,
+    marginBottom: 10,
+  },
+  cardFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 10,
     borderTopWidth: 1,
   },
-  avatarRow: {
+  avatarStack: {
     flexDirection: "row",
     alignItems: "center",
   },
   avatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    borderWidth: 1.5,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 6,
+    borderWidth: 2,
   },
+  avatarMore: {},
   avatarText: {
+    fontSize: 10,
     fontWeight: "600",
-    fontSize: 12,
   },
   lastPick: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 4,
   },
   lastPickText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "500",
   },
   fab: {
     position: "absolute",
     right: 16,
-    bottom: 26,
-    borderRadius: 999,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    bottom: 24,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     flexDirection: "row",
     alignItems: "center",
+    gap: 6,
     shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 3,
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
   fabText: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 14,
-    marginLeft: 6,
+    fontSize: 13,
   },
-  modalBackdrop: {
+  backdrop: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.35)",
-    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
     justifyContent: "flex-end",
   },
-  modalCard: {
-    width: "100%",
+  sheet: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
-    borderWidth: 1,
+    paddingBottom: 32,
   },
-  modalTitle: {
-    marginBottom: 10,
+  handleRow: {
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  handle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+  },
+  sheetTitle: {
+    marginBottom: 16,
+    fontSize: 18,
   },
   label: {
+    fontSize: 11,
     fontWeight: "600",
+    letterSpacing: 0.5,
     marginBottom: 6,
-    fontSize: 14,
   },
   input: {
     borderWidth: 1,
     borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    marginBottom: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     fontSize: 14,
+    marginBottom: 14,
   },
-  chipRow: {
+  chipWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 8,
+    gap: 6,
     marginBottom: 10,
   },
   chip: {
-    borderRadius: 999,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginRight: 6,
-    marginBottom: 6,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   chipText: {
     fontWeight: "600",
     fontSize: 13,
   },
-  inlineRow: {
+  addRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    gap: 8,
+    marginBottom: 20,
   },
   flex1: {
     flex: 1,
   },
-  addButton: {
+  addBtn: {
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 10,
-    marginLeft: 8,
   },
-  addButtonText: {
+  addBtnText: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 14,
+    fontSize: 13,
   },
-  modalActions: {
+  sheetActions: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    gap: 10,
   },
-  secondaryButton: {
+  cancelBtn: {
     flex: 1,
     borderWidth: 1,
     borderRadius: 12,
-    paddingVertical: 10,
+    paddingVertical: 12,
     alignItems: "center",
   },
-  secondaryText: {
-    fontWeight: "700",
+  cancelText: {
+    fontWeight: "600",
     fontSize: 14,
   },
-  primaryButton: {
+  saveBtn: {
     flex: 1,
     borderRadius: 12,
-    paddingVertical: 10,
+    paddingVertical: 12,
     alignItems: "center",
-    marginLeft: 10,
   },
-  primaryText: {
+  saveText: {
     color: "#fff",
     fontWeight: "700",
     fontSize: 14,
