@@ -1,50 +1,61 @@
-import React, { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useMemo } from "react";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 const stats = [
-  { label: 'Groups', value: '3' },
-  { label: 'Ratings', value: '18' },
-  { label: 'Saved picks', value: '9' },
+  { label: "Groups", value: "3" },
+  { label: "Ratings", value: "18" },
+  { label: "Saved picks", value: "9" },
 ];
 
 const preferences = [
-  { label: 'Diet', value: 'Pescatarian + dairy-light' },
-  { label: 'Budget', value: '<$30 casual · <$55 dinner' },
-  { label: 'Distance', value: 'Weekday 3 mi · Weekend 5 mi' },
-  { label: 'Ambience', value: 'Quiet, cozy, music low' },
+  { label: "Diet", value: "Pescatarian + dairy-light" },
+  { label: "Budget", value: "<$30 casual · <$55 dinner" },
+  { label: "Distance", value: "Weekday 3 mi · Weekend 5 mi" },
+  { label: "Ambience", value: "Quiet, cozy, music low" },
 ];
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
-  const accent = Colors[colorScheme ?? 'light'].tint;
+  const accent = Colors[colorScheme ?? "light"].tint;
 
   const { cardBackground, borderColor, mutedText } = useMemo(() => {
-    const isDark = colorScheme === 'dark';
+    const isDark = colorScheme === "dark";
     return {
-      cardBackground: isDark ? '#1c1f24' : '#f6f7fb',
-      borderColor: isDark ? '#2d3137' : '#e6e8ec',
-      mutedText: isDark ? '#9ea7b3' : '#5b6472',
+      cardBackground: isDark ? "#1c1f24" : "#f6f7fb",
+      borderColor: isDark ? "#2d3137" : "#e6e8ec",
+      mutedText: isDark ? "#9ea7b3" : "#5b6472",
     };
   }, [colorScheme]);
 
   return (
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={[styles.card, { backgroundColor: cardBackground, borderColor }]}>
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: cardBackground, borderColor },
+          ]}
+        >
           <View style={styles.profileRow}>
-            <View style={[styles.avatar, { backgroundColor: accent + '1a' }]}>
-              <ThemedText style={[styles.avatarText, { color: accent }]}>M</ThemedText>
+            <View style={[styles.avatar, { backgroundColor: accent + "1a" }]}>
+              <ThemedText style={[styles.avatarText, { color: accent }]}>
+                M
+              </ThemedText>
             </View>
             <View>
               <ThemedText type="title">Morgan Lee</ThemedText>
-              <ThemedText style={[styles.muted, { color: mutedText }]}>morgan@example.com</ThemedText>
-              <ThemedText style={[styles.muted, { color: mutedText }]}>Joined Jan 2024</ThemedText>
+              <ThemedText style={[styles.muted, { color: mutedText }]}>
+                morgan@example.com
+              </ThemedText>
+              <ThemedText style={[styles.muted, { color: mutedText }]}>
+                Joined Jan 2024
+              </ThemedText>
             </View>
           </View>
           <View style={styles.statRow}>
@@ -59,7 +70,12 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        <View style={[styles.card, { backgroundColor: cardBackground, borderColor }]}>
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: cardBackground, borderColor },
+          ]}
+        >
           <ThemedText style={styles.sectionTitle}>Preferences</ThemedText>
           {preferences.map((pref) => (
             <View key={pref.label} style={styles.prefRow}>
@@ -71,7 +87,15 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        <View style={[styles.card, { backgroundColor: colorScheme === 'dark' ? '#111418' : '#fff', borderColor }]}>
+        <View
+          style={[
+            styles.card,
+            {
+              backgroundColor: colorScheme === "dark" ? "#111418" : "#fff",
+              borderColor,
+            },
+          ]}
+        >
           <ThemedText style={styles.sectionTitle}>Actions</ThemedText>
           <Pressable
             style={({ pressed }) => [
@@ -82,10 +106,13 @@ export default function ProfileScreen() {
           >
             <View style={styles.primaryRow}>
               <IconSymbol name="sparkles" size={22} color="#fff" />
-              <ThemedText style={styles.primaryText}>Update onboarding</ThemedText>
+              <ThemedText style={styles.primaryText}>
+                Update onboarding
+              </ThemedText>
             </View>
             <ThemedText style={styles.primaryHint}>
-              Refresh cuisine, spice, ambience, budget, and distance preferences.
+              Refresh cuisine, spice, ambience, budget, and distance
+              preferences.
             </ThemedText>
           </Pressable>
 
@@ -102,7 +129,9 @@ export default function ProfileScreen() {
                 Notification settings
               </ThemedText>
             </View>
-            <ThemedText style={[styles.muted, { color: mutedText }]}>Push prompts for invites and post-visit ratings.</ThemedText>
+            <ThemedText style={[styles.muted, { color: mutedText }]}>
+              Push prompts for invites and post-visit ratings.
+            </ThemedText>
           </Pressable>
         </View>
       </ScrollView>
@@ -115,102 +144,105 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-    paddingTop: 32,
+    padding: 16,
+    paddingTop: 44,
     paddingBottom: 60,
   },
   card: {
     borderWidth: 1,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 14,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 8,
   },
   profileRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
   },
   avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 14,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
   },
   avatarText: {
-    fontSize: 26,
-    fontWeight: '800',
+    fontSize: 22,
+    fontWeight: "800",
   },
   muted: {
-    fontSize: 14,
+    fontSize: 12,
   },
   statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   statCard: {
     flex: 1,
     borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
-    alignItems: 'center',
-    marginRight: 10,
+    borderRadius: 10,
+    padding: 8,
+    alignItems: "center",
+    marginRight: 6,
   },
   statValue: {
-    fontWeight: '800',
-    fontSize: 20,
-  },
-  statLabel: {
-    fontSize: 13,
-    marginTop: 4,
-  },
-  sectionTitle: {
-    fontWeight: '700',
-    marginBottom: 10,
+    fontWeight: "800",
     fontSize: 16,
   },
-  prefRow: {
-    marginBottom: 12,
+  statLabel: {
+    fontSize: 11,
+    marginTop: 2,
   },
-  prefLabel: {
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  prefValue: {
+  sectionTitle: {
+    fontWeight: "700",
+    marginBottom: 6,
     fontSize: 14,
   },
-  primaryButton: {
-    borderRadius: 14,
-    padding: 14,
-    marginBottom: 10,
+  prefRow: {
+    marginBottom: 8,
   },
-  primaryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  prefLabel: {
+    fontWeight: "700",
+    marginBottom: 2,
+    fontSize: 13,
+  },
+  prefValue: {
+    fontSize: 12,
+  },
+  primaryButton: {
+    borderRadius: 10,
+    padding: 10,
     marginBottom: 6,
   },
+  primaryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 3,
+  },
   primaryText: {
-    color: '#fff',
-    fontWeight: '700',
-    marginLeft: 8,
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 13,
+    marginLeft: 6,
   },
   primaryHint: {
-    color: '#e0f2ff',
-    fontSize: 13,
+    color: "#e0f2ff",
+    fontSize: 11,
   },
   secondaryButton: {
     borderWidth: 1,
-    borderRadius: 14,
-    padding: 14,
-    marginBottom: 8,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 6,
   },
   secondaryText: {
-    fontWeight: '700',
+    fontWeight: "700",
+    fontSize: 13,
   },
   inlineRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 3,
   },
 });

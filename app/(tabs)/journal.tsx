@@ -1,49 +1,49 @@
-import React, { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useMemo } from "react";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 const entries = [
   {
-    name: 'Shoyu Lab',
-    group: 'Weekend Foodies',
-    notes: 'Warm broth, veg options, quiet enough to chat.',
-    tags: ['Perfect Fit', 'Veg options', '<$25'],
+    name: "Shoyu Lab",
+    group: "Weekend Foodies",
+    notes: "Warm broth, veg options, quiet enough to chat.",
+    tags: ["Perfect Fit", "Veg options", "<$25"],
     rating: 5,
-    meta: 'Sun · 8:30 PM · 1.2 mi',
+    meta: "Sun · 8:30 PM · 1.2 mi",
   },
   {
-    name: 'Cedar Mezze',
-    group: 'Tuesday Lunch Crew',
-    notes: 'Fast service, good shareables, terrace seating.',
-    tags: ['Safe', 'Outdoor', 'Quick'],
+    name: "Cedar Mezze",
+    group: "Tuesday Lunch Crew",
+    notes: "Fast service, good shareables, terrace seating.",
+    tags: ["Safe", "Outdoor", "Quick"],
     rating: 4,
-    meta: 'Tue · 12:10 PM · 0.6 mi',
+    meta: "Tue · 12:10 PM · 0.6 mi",
   },
   {
-    name: 'Pizzeria Lola',
-    group: 'Family Dinner',
-    notes: 'Kid-friendly, dairy-free options, easy parking.',
-    tags: ['Family', 'Low spice', 'Parking'],
+    name: "Pizzeria Lola",
+    group: "Family Dinner",
+    notes: "Kid-friendly, dairy-free options, easy parking.",
+    tags: ["Family", "Low spice", "Parking"],
     rating: 4,
-    meta: 'Fri · 6:45 PM · 2.1 mi',
+    meta: "Fri · 6:45 PM · 2.1 mi",
   },
 ];
 
 export default function ReviewHistoryScreen() {
   const colorScheme = useColorScheme();
-  const accent = Colors[colorScheme ?? 'light'].tint;
+  const accent = Colors[colorScheme ?? "light"].tint;
 
   const { cardBackground, borderColor, mutedText } = useMemo(() => {
-    const isDark = colorScheme === 'dark';
+    const isDark = colorScheme === "dark";
     return {
-      cardBackground: isDark ? '#1c1f24' : '#f6f7fb',
-      borderColor: isDark ? '#2d3137' : '#e6e8ec',
-      mutedText: isDark ? '#9ea7b3' : '#5b6472',
+      cardBackground: isDark ? "#1c1f24" : "#f6f7fb",
+      borderColor: isDark ? "#2d3137" : "#e6e8ec",
+      mutedText: isDark ? "#9ea7b3" : "#5b6472",
     };
   }, [colorScheme]);
 
@@ -101,7 +101,10 @@ export default function ReviewHistoryScreen() {
             <ThemedText style={styles.note}>{entry.notes}</ThemedText>
             <View style={styles.tagRow}>
               {entry.tags.map((tag) => (
-                <View key={tag} style={[styles.tag, { backgroundColor: accent + '12' }]}>
+                <View
+                  key={tag}
+                  style={[styles.tag, { backgroundColor: accent + "12" }]}
+                >
                   <ThemedText style={[styles.tagText, { color: accent }]}>
                     {tag}
                   </ThemedText>
@@ -110,7 +113,7 @@ export default function ReviewHistoryScreen() {
             </View>
 
             <View style={styles.footerRow}>
-              <View style={[styles.pill, { backgroundColor: accent + '1a' }]}>
+              <View style={[styles.pill, { backgroundColor: accent + "1a" }]}>
                 <ThemedText style={[styles.pillText, { color: accent }]}>
                   {entry.group}
                 </ThemedText>
@@ -128,77 +131,80 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-    paddingTop: 32,
+    padding: 16,
+    paddingTop: 44,
     paddingBottom: 60,
   },
   headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
   },
   subheading: {
-    marginTop: 6,
-    fontSize: 15,
+    marginTop: 4,
+    fontSize: 14,
   },
   secondaryButton: {
     borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   secondaryText: {
-    fontWeight: '700',
+    fontWeight: "700",
+    fontSize: 12,
   },
   card: {
     borderWidth: 1,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 14,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 8,
   },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 6,
   },
   muted: {
-    fontSize: 13,
+    fontSize: 11,
   },
   ratingRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   note: {
-    fontSize: 15,
-    marginBottom: 10,
+    fontSize: 13,
+    marginBottom: 6,
   },
   tagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 12,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginBottom: 6,
   },
   tag: {
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    marginRight: 8,
-    marginBottom: 8,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    marginRight: 5,
+    marginBottom: 5,
   },
   tagText: {
-    fontWeight: '700',
+    fontWeight: "700",
+    fontSize: 11,
   },
   footerRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
   pill: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     borderRadius: 999,
   },
   pillText: {
-    fontWeight: '600',
+    fontWeight: "600",
+    fontSize: 12,
   },
 });

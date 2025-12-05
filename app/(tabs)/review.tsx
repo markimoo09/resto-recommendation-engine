@@ -1,40 +1,44 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from "react";
 import {
   Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
   View,
-} from 'react-native';
+} from "react-native";
 
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 const mockPlaces = [
-  { name: 'Shoyu Lab', detail: 'Ramen · 1.2 mi' },
-  { name: 'Cedar Mezze', detail: 'Mediterranean · 0.6 mi' },
-  { name: 'Pizzeria Lola', detail: 'Pizza · 2.1 mi' },
+  { name: "Shoyu Lab", detail: "Ramen · 1.2 mi" },
+  { name: "Cedar Mezze", detail: "Mediterranean · 0.6 mi" },
+  { name: "Pizzeria Lola", detail: "Pizza · 2.1 mi" },
 ];
 
 export default function ReviewsScreen() {
   const colorScheme = useColorScheme();
-  const accent = Colors[colorScheme ?? 'light'].tint;
-  const [selectedLocation, setSelectedLocation] = useState<typeof mockPlaces[0] | null>(null);
+  const accent = Colors[colorScheme ?? "light"].tint;
+  const [selectedLocation, setSelectedLocation] = useState<
+    (typeof mockPlaces)[0] | null
+  >(null);
   const [rating, setRating] = useState(4);
-  const [notes, setNotes] = useState('Loved the broth, service was quick, spice was just right.');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [photoUri, setPhotoUri] = useState('');
+  const [notes, setNotes] = useState(
+    "Loved the broth, service was quick, spice was just right."
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [photoUri, setPhotoUri] = useState("");
 
   const { cardBackground, borderColor, mutedText, inputBg } = useMemo(() => {
-    const isDark = colorScheme === 'dark';
+    const isDark = colorScheme === "dark";
     return {
-      cardBackground: isDark ? '#1c1f24' : '#f6f7fb',
-      borderColor: isDark ? '#2d3137' : '#e6e8ec',
-      mutedText: isDark ? '#9ea7b3' : '#5b6472',
-      inputBg: isDark ? '#0f1115' : '#fff',
+      cardBackground: isDark ? "#1c1f24" : "#f6f7fb",
+      borderColor: isDark ? "#2d3137" : "#e6e8ec",
+      mutedText: isDark ? "#9ea7b3" : "#5b6472",
+      inputBg: isDark ? "#0f1115" : "#fff",
     };
   }, [colorScheme]);
 
@@ -69,7 +73,7 @@ export default function ReviewsScreen() {
               {
                 borderColor,
                 backgroundColor: inputBg,
-                color: Colors[colorScheme ?? 'light'].text,
+                color: Colors[colorScheme ?? "light"].text,
               },
             ]}
           />
@@ -84,26 +88,37 @@ export default function ReviewsScreen() {
                     style={({ pressed }) => [
                       styles.suggestion,
                       {
-                        backgroundColor: selected ? accent + '12' : undefined,
+                        backgroundColor: selected ? accent + "12" : undefined,
                       },
                       pressed && { opacity: 0.88 },
                     ]}
                   >
                     <View>
-                      <ThemedText style={styles.optionTitle}>{place.name}</ThemedText>
-                      <ThemedText style={[styles.optionCaption, { color: mutedText }]}>
+                      <ThemedText style={styles.optionTitle}>
+                        {place.name}
+                      </ThemedText>
+                      <ThemedText
+                        style={[styles.optionCaption, { color: mutedText }]}
+                      >
                         {place.detail}
                       </ThemedText>
                     </View>
                     {selected && (
-                      <IconSymbol name="chevron.right" size={18} color={accent} />
+                      <IconSymbol
+                        name="chevron.right"
+                        size={18}
+                        color={accent}
+                      />
                     )}
                   </Pressable>
                 );
               })
             ) : (
               <ThemedText
-                style={[styles.optionCaption, { color: mutedText, paddingHorizontal: 4 }]}
+                style={[
+                  styles.optionCaption,
+                  { color: mutedText, paddingHorizontal: 4 },
+                ]}
               >
                 Type to search and select a spot.
               </ThemedText>
@@ -112,17 +127,26 @@ export default function ReviewsScreen() {
 
           {selectedLocation && (
             <View
-              style={[styles.selectedRow, { borderColor, backgroundColor: cardBackground }]}
+              style={[
+                styles.selectedRow,
+                { borderColor, backgroundColor: cardBackground },
+              ]}
             >
-              <IconSymbol name="book.fill" size={20} color={accent} />
+              <IconSymbol name="book.fill" size={18} color={accent} />
               <View style={styles.selectedTextBlock}>
-                <ThemedText style={styles.optionTitle}>{selectedLocation.name}</ThemedText>
-                <ThemedText style={[styles.optionCaption, { color: mutedText }]}>
+                <ThemedText style={styles.optionTitle}>
+                  {selectedLocation.name}
+                </ThemedText>
+                <ThemedText
+                  style={[styles.optionCaption, { color: mutedText }]}
+                >
                   {selectedLocation.detail}
                 </ThemedText>
               </View>
               <Pressable onPress={() => setSelectedLocation(null)}>
-                <ThemedText style={[styles.clearText, { color: mutedText }]}>Clear</ThemedText>
+                <ThemedText style={[styles.clearText, { color: mutedText }]}>
+                  Clear
+                </ThemedText>
               </Pressable>
             </View>
           )}
@@ -131,12 +155,14 @@ export default function ReviewsScreen() {
         <View style={styles.section}>
           <ThemedText style={styles.label}>Photo</ThemedText>
           <Pressable
-            onPress={() => setPhotoUri((prev) => (prev ? '' : 'dining_room.jpg'))}
+            onPress={() =>
+              setPhotoUri((prev) => (prev ? "" : "dining_room.jpg"))
+            }
             style={({ pressed }) => [
               styles.photoSquare,
               {
                 borderColor,
-                backgroundColor: photoUri ? accent + '12' : inputBg,
+                backgroundColor: photoUri ? accent + "12" : inputBg,
               },
               pressed && { opacity: 0.9 },
             ]}
@@ -144,13 +170,21 @@ export default function ReviewsScreen() {
             {photoUri ? (
               <View style={styles.photoFilled}>
                 <IconSymbol name="paperplane.fill" color={accent} size={24} />
-                <ThemedText style={[styles.photoText, { color: accent }]}>{photoUri}</ThemedText>
+                <ThemedText style={[styles.photoText, { color: accent }]}>
+                  {photoUri}
+                </ThemedText>
               </View>
             ) : (
               <View style={styles.photoEmpty}>
                 <IconSymbol name="paperplane.fill" color={accent} size={26} />
-                <ThemedText style={[styles.photoText, { color: accent }]}>Add image</ThemedText>
-                <ThemedText style={[styles.optionCaption, { color: mutedText }]}>Press to attach</ThemedText>
+                <ThemedText style={[styles.photoText, { color: accent }]}>
+                  Add image
+                </ThemedText>
+                <ThemedText
+                  style={[styles.optionCaption, { color: mutedText }]}
+                >
+                  Press to attach
+                </ThemedText>
               </View>
             )}
           </Pressable>
@@ -163,7 +197,10 @@ export default function ReviewsScreen() {
               <Pressable
                 key={value}
                 onPress={() => setRating(value)}
-                style={({ pressed }) => [styles.starButton, pressed && { transform: [{ scale: 0.96 }] }]}
+                style={({ pressed }) => [
+                  styles.starButton,
+                  pressed && { transform: [{ scale: 0.96 }] },
+                ]}
               >
                 <IconSymbol
                   name="star.fill"
@@ -189,14 +226,19 @@ export default function ReviewsScreen() {
               {
                 borderColor,
                 backgroundColor: inputBg,
-                color: Colors[colorScheme ?? 'light'].text,
+                color: Colors[colorScheme ?? "light"].text,
               },
             ]}
           />
           <View style={styles.tagRow}>
-            {['Service', 'Spice level', 'Ambience', 'Price'].map((tag) => (
-              <View key={tag} style={[styles.tag, { backgroundColor: accent + '12' }]}>
-                <ThemedText style={[styles.tagText, { color: accent }]}>{tag}</ThemedText>
+            {["Service", "Spice level", "Ambience", "Price"].map((tag) => (
+              <View
+                key={tag}
+                style={[styles.tag, { backgroundColor: accent + "12" }]}
+              >
+                <ThemedText style={[styles.tagText, { color: accent }]}>
+                  {tag}
+                </ThemedText>
               </View>
             ))}
           </View>
@@ -224,130 +266,136 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-    paddingTop: 32,
+    padding: 16,
+    paddingTop: 44,
     paddingBottom: 80,
   },
   heading: {
-    marginBottom: 6,
+    marginBottom: 4,
   },
   subheading: {
-    marginBottom: 16,
-    fontSize: 15,
+    marginBottom: 10,
+    fontSize: 14,
   },
   section: {
-    marginBottom: 18,
+    marginBottom: 12,
   },
   label: {
-    fontWeight: '700',
-    marginBottom: 10,
+    fontWeight: "700",
+    marginBottom: 6,
+    fontSize: 13,
   },
   input: {
     borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 15,
-    marginBottom: 10,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    fontSize: 13,
+    marginBottom: 6,
   },
   suggestionList: {
     borderWidth: 1,
-    borderRadius: 12,
-    padding: 8,
-    marginBottom: 10,
+    borderRadius: 10,
+    padding: 5,
+    marginBottom: 6,
   },
   suggestion: {
-    paddingVertical: 10,
+    paddingVertical: 6,
     paddingHorizontal: 6,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   optionTitle: {
-    fontWeight: '700',
-    marginBottom: 4,
+    fontWeight: "700",
+    marginBottom: 2,
+    fontSize: 13,
   },
   optionCaption: {
-    fontSize: 14,
+    fontSize: 12,
   },
   selectedRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: 10,
+    padding: 8,
     marginTop: 4,
   },
   selectedTextBlock: {
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 8,
   },
   clearText: {
-    fontWeight: '700',
+    fontWeight: "700",
+    fontSize: 13,
   },
   photoSquare: {
-    width: '100%',
-    height: 220,
+    width: "100%",
+    height: 160,
     borderWidth: 1,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
   photoEmpty: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   photoFilled: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   photoText: {
-    fontWeight: '700',
-    marginTop: 6,
+    fontWeight: "700",
+    marginTop: 4,
+    fontSize: 12,
   },
   textArea: {
     borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 15,
-    minHeight: 120,
-    textAlignVertical: 'top',
+    borderRadius: 10,
+    padding: 9,
+    fontSize: 13,
+    minHeight: 90,
+    textAlignVertical: "top",
   },
   tagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 10,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 6,
   },
   tag: {
     borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginRight: 8,
-    marginBottom: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    marginRight: 5,
+    marginBottom: 5,
   },
   tagText: {
-    fontWeight: '700',
+    fontWeight: "700",
+    fontSize: 12,
   },
   starsRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 4,
   },
   starButton: {
-    marginRight: 8,
+    marginRight: 5,
   },
   primaryButton: {
-    borderRadius: 16,
-    padding: 16,
-    marginTop: 6,
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 4,
   },
   primaryText: {
-    color: '#fff',
-    fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: 4,
+    color: "#fff",
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 3,
+    fontSize: 14,
   },
   primaryHint: {
-    color: '#e0f2ff',
-    fontSize: 13,
-    textAlign: 'center',
+    color: "#e0f2ff",
+    fontSize: 12,
+    textAlign: "center",
   },
 });

@@ -1,17 +1,11 @@
-import React, { useMemo, useState } from 'react';
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import React, { useMemo, useState } from "react";
+import { Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
 
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 type Group = {
   name: string;
@@ -22,28 +16,28 @@ type Group = {
 
 const mockGroups: Group[] = [
   {
-    name: 'Weekend Foodies',
-    members: ['Sam', 'Mina', 'Chris', 'Ava'],
-    constraints: 'Veg-friendly · med spice · <$30 · 2 mi',
-    mood: 'Explore',
+    name: "Weekend Foodies",
+    members: ["Sam", "Mina", "Chris", "Ava"],
+    constraints: "Veg-friendly · med spice · <$30 · 2 mi",
+    mood: "Explore",
   },
   {
-    name: 'Tuesday Lunch Crew',
-    members: ['Alex', 'Priya'],
-    constraints: 'Quick lunch · <$20 · walkable',
-    mood: 'Safety-first',
+    name: "Tuesday Lunch Crew",
+    members: ["Alex", "Priya"],
+    constraints: "Quick lunch · <$20 · walkable",
+    mood: "Safety-first",
   },
   {
-    name: 'Family Dinner',
-    members: ['Mom', 'Dad', 'Lina'],
-    constraints: 'Low spice · cozy · 5 mi',
-    mood: 'Balanced',
+    name: "Family Dinner",
+    members: ["Mom", "Dad", "Lina"],
+    constraints: "Low spice · cozy · 5 mi",
+    mood: "Balanced",
   },
 ];
 
 export default function RecommendationsScreen() {
   const colorScheme = useColorScheme();
-  const accent = Colors[colorScheme ?? 'light'].tint;
+  const accent = Colors[colorScheme ?? "light"].tint;
   const [showSelector, setShowSelector] = useState(false);
   const [activeGroup, setActiveGroup] = useState<Group>(mockGroups[0]);
   const [selectedMembers, setSelectedMembers] = useState<string[]>(
@@ -51,11 +45,11 @@ export default function RecommendationsScreen() {
   );
 
   const { cardBackground, borderColor, mutedText } = useMemo(() => {
-    const isDark = colorScheme === 'dark';
+    const isDark = colorScheme === "dark";
     return {
-      cardBackground: isDark ? '#1c1f24' : '#f6f7fb',
-      borderColor: isDark ? '#2d3137' : '#e6e8ec',
-      mutedText: isDark ? '#9ea7b3' : '#5b6472',
+      cardBackground: isDark ? "#1c1f24" : "#f6f7fb",
+      borderColor: isDark ? "#2d3137" : "#e6e8ec",
+      mutedText: isDark ? "#9ea7b3" : "#5b6472",
     };
   }, [colorScheme]);
 
@@ -114,13 +108,13 @@ export default function RecommendationsScreen() {
           </View>
 
           <View style={styles.inlineRow}>
-            <View style={[styles.pill, { backgroundColor: accent + '12' }]}>
+            <View style={[styles.pill, { backgroundColor: accent + "12" }]}>
               <ThemedText style={[styles.pillText, { color: accent }]}>
                 Mode: {activeGroup.mood}
               </ThemedText>
             </View>
-            <View style={[styles.pill, { backgroundColor: '#22c55e1a' }]}>
-              <ThemedText style={[styles.pillText, { color: '#22c55e' }]}>
+            <View style={[styles.pill, { backgroundColor: "#22c55e1a" }]}>
+              <ThemedText style={[styles.pillText, { color: "#22c55e" }]}>
                 Ready
               </ThemedText>
             </View>
@@ -129,11 +123,8 @@ export default function RecommendationsScreen() {
           <ThemedText style={styles.label}>Members in this run</ThemedText>
           <View style={styles.chipRow}>
             {selectedMembers.map((member) => (
-              <View
-                key={member}
-                style={[styles.memberIcon, { borderColor }]}
-              >
-                <IconSymbol name="person.fill" size={18} color={accent} />
+              <View key={member} style={[styles.memberIcon, { borderColor }]}>
+                <IconSymbol name="person.fill" size={16} color={accent} />
               </View>
             ))}
             <Pressable
@@ -144,7 +135,9 @@ export default function RecommendationsScreen() {
                 pressed && { opacity: 0.85 },
               ]}
             >
-              <ThemedText style={[styles.addIcon, { color: accent }]}>+</ThemedText>
+              <ThemedText style={[styles.addIcon, { color: accent }]}>
+                +
+              </ThemedText>
             </Pressable>
           </View>
         </View>
@@ -159,7 +152,9 @@ export default function RecommendationsScreen() {
         >
           <View style={styles.primaryContent}>
             <IconSymbol name="sparkles" color="#fff" size={22} />
-            <ThemedText style={styles.primaryText}>Generate suggestion</ThemedText>
+            <ThemedText style={styles.primaryText}>
+              Generate suggestion
+            </ThemedText>
           </View>
           <ThemedText style={styles.primaryHint}>
             Not live yet — this is the shape of the flow.
@@ -177,7 +172,10 @@ export default function RecommendationsScreen() {
           <ThemedView
             style={[
               styles.modalCard,
-              { backgroundColor: colorScheme === 'dark' ? '#111418' : '#fff', borderColor },
+              {
+                backgroundColor: colorScheme === "dark" ? "#111418" : "#fff",
+                borderColor,
+              },
             ]}
           >
             <View style={styles.modalHeader}>
@@ -197,19 +195,25 @@ export default function RecommendationsScreen() {
                     styles.groupOption,
                     {
                       borderColor,
-                      backgroundColor: selected ? accent + '12' : undefined,
+                      backgroundColor: selected ? accent + "12" : undefined,
                     },
                     pressed && { opacity: 0.88 },
                   ]}
                 >
                   <View>
-                    <ThemedText style={styles.optionTitle}>{group.name}</ThemedText>
-                    <ThemedText style={[styles.optionCaption, { color: mutedText }]}>
+                    <ThemedText style={styles.optionTitle}>
+                      {group.name}
+                    </ThemedText>
+                    <ThemedText
+                      style={[styles.optionCaption, { color: mutedText }]}
+                    >
                       {group.constraints}
                     </ThemedText>
                   </View>
                   {selected && (
-                    <View style={[styles.pill, { backgroundColor: accent + '1a' }]}>
+                    <View
+                      style={[styles.pill, { backgroundColor: accent + "1a" }]}
+                    >
                       <ThemedText style={[styles.pillText, { color: accent }]}>
                         Active
                       </ThemedText>
@@ -231,7 +235,7 @@ export default function RecommendationsScreen() {
                       styles.memberChip,
                       {
                         borderColor,
-                        backgroundColor: picked ? accent + '12' : undefined,
+                        backgroundColor: picked ? accent + "12" : undefined,
                       },
                       pressed && { opacity: 0.88 },
                     ]}
@@ -240,7 +244,10 @@ export default function RecommendationsScreen() {
                       {member.charAt(0)}
                     </ThemedText>
                     <ThemedText
-                      style={[styles.memberName, { color: picked ? accent : mutedText }]}
+                      style={[
+                        styles.memberName,
+                        { color: picked ? accent : mutedText },
+                      ]}
                     >
                       {member}
                     </ThemedText>
@@ -257,7 +264,9 @@ export default function RecommendationsScreen() {
                 pressed && { opacity: 0.9 },
               ]}
             >
-              <ThemedText style={styles.primaryText}>Use these selections</ThemedText>
+              <ThemedText style={styles.primaryText}>
+                Use these selections
+              </ThemedText>
             </Pressable>
           </ThemedView>
         </View>
@@ -271,163 +280,169 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-    paddingTop: 32,
+    padding: 16,
+    paddingTop: 44,
     paddingBottom: 80,
   },
   heading: {
-    marginBottom: 6,
+    marginBottom: 4,
   },
   subheading: {
-    marginBottom: 16,
-    fontSize: 15,
+    marginBottom: 10,
+    fontSize: 14,
   },
   card: {
     borderWidth: 1,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 14,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 8,
   },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 6,
   },
   muted: {
-    fontSize: 15,
+    fontSize: 13,
   },
   secondaryButton: {
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   secondaryText: {
-    fontWeight: '700',
+    fontWeight: "700",
+    fontSize: 12,
   },
   inlineRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
   },
   pill: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     borderRadius: 999,
-    marginRight: 10,
+    marginRight: 6,
   },
   pillText: {
-    fontWeight: '600',
+    fontWeight: "600",
+    fontSize: 12,
   },
   label: {
-    fontWeight: '700',
-    marginBottom: 8,
-    marginTop: 6,
+    fontWeight: "700",
+    marginBottom: 5,
+    marginTop: 4,
+    fontSize: 13,
   },
   chipRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
   },
   memberIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
-    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 6,
+    marginBottom: 6,
   },
   addChip: {
     borderWidth: 1,
-    borderStyle: 'dashed',
+    borderStyle: "dashed",
     borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginBottom: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    marginBottom: 6,
   },
   addIcon: {
-    fontWeight: '800',
-    fontSize: 16,
+    fontWeight: "800",
+    fontSize: 13,
   },
   primaryButton: {
-    borderRadius: 14,
-    padding: 16,
+    borderRadius: 10,
+    padding: 10,
     marginTop: 4,
   },
   primaryContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 3,
   },
   primaryText: {
-    color: '#fff',
-    fontWeight: '700',
-    marginLeft: 8,
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 14,
+    marginLeft: 6,
   },
   primaryHint: {
-    textAlign: 'center',
-    color: '#e0f2ff',
-    fontSize: 13,
+    textAlign: "center",
+    color: "#e0f2ff",
+    fontSize: 12,
   },
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0,0,0,0.35)",
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
   modalCard: {
-    width: '100%',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 20,
+    width: "100%",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 16,
     borderWidth: 1,
   },
   modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
   groupOption: {
     borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   optionTitle: {
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  optionCaption: {
+    fontWeight: "700",
+    marginBottom: 3,
     fontSize: 14,
   },
+  optionCaption: {
+    fontSize: 13,
+  },
   memberGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 8,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 6,
   },
   memberChip: {
     borderWidth: 1,
-    borderRadius: 12,
-    padding: 10,
-    marginRight: 10,
-    marginBottom: 10,
-    alignItems: 'center',
-    width: '46%',
+    borderRadius: 10,
+    padding: 8,
+    marginRight: 8,
+    marginBottom: 8,
+    alignItems: "center",
+    width: "46%",
   },
   memberInitial: {
-    fontWeight: '700',
-    marginBottom: 4,
+    fontWeight: "700",
+    marginBottom: 3,
+    fontSize: 13,
   },
   memberName: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: "600",
   },
 });
