@@ -1,50 +1,52 @@
-# Welcome to your Expo app 👋
+# Kilo
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Kilo is a group-focused food recommendation engine that builds a personal taste vector for each member, respects group constraints, and returns a set of choices you can act on quickly. Every recommendation explains why it fits.
 
-## Get started
+## What it does
 
-1. Install dependencies
+- Onboarding captures cuisine, spice tolerance, ambience, budget, distance, and diet preferences.
+- Feedback (thumbs + tags) continually updates each person’s taste vector.
+- Group resolver applies shared constraints (diet/budget/distance) and returns 3 Perfect Fits, 2 Safe Options, and 1 Wildcard with short reasons.
+- Modes: Safety-first (no wildcard) and Explore (boost novelty while honoring constraints).
+- Privacy-first: no raw location logging; only derived constraints are stored.
 
-   ```bash
-   npm install
-   ```
+## Architecture
 
-2. Start the app
+- React Native app using Expo Router for navigation and theming helpers for consistent UI.
+- Supabase for Auth, Postgres/PostGIS/pgvector storage, and embeddings refresh.
+- FastAPI recommendation service that computes and ranks options from user vectors and constraints.
 
-   ```bash
-   npx expo start
-   ```
+## Project structure
 
-In the output, you'll find options to open the app in a
+- `app/`: Expo Router screens; `(tabs)/` hosts core flows (home, reco, review, journal, profile); layout in `app/_layout.tsx`.
+- `components/`: reusable UI (themed text/view, haptic tab, parallax scroll, external link); `components/ui/` holds platform-specific icons.
+- `constants/theme.ts`: centralized colors; `hooks/`: theming/color-scheme helpers.
+- `assets/`: images and fonts.
+- `scripts/reset-project.js`: moves starter code to `app-example/` and recreates a blank `app/` (use cautiously).
+- Root configs: `eslint.config.js`, `tsconfig.json`, Expo `app.json`.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Development
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Install dependencies:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Start the app (choose device/simulator/Expo Go when prompted):
 
-## Learn more
+```bash
+npm run start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Shortcuts:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- `npm run ios` / `npm run android` / `npm run web` to target a platform directly.
+- `npm run lint` for TypeScript/React Native linting.
+- `npm run reset-project` to restore the starter scaffold (destructive to `app/`).
 
-## Join the community
+## Usage notes
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Prefer functional components and hooks; keep imports ordered (libs → aliases → relatives) and use the `@/` alias for root paths.
+- Use existing themed components (`ThemedView`, `ThemedText`) and haptic tab wrapper for visual and feedback consistency.
+- Do not commit API keys or secrets; wire credentials through Expo config or env files excluded from VCS.
