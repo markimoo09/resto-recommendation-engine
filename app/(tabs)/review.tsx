@@ -74,9 +74,9 @@ export default function ReviewsScreen() {
               },
             ]}
           />
-          <View style={[styles.suggestionList, { borderColor }]}>
-            {filteredPlaces.length > 0 ? (
-              filteredPlaces.map((place) => {
+          {filteredPlaces.length > 0 && (
+            <View style={[styles.suggestionList, { borderColor }]}>
+              {filteredPlaces.map((place) => {
                 const selected = selectedLocation?.name === place.name;
                 return (
                   <Pressable
@@ -109,18 +109,9 @@ export default function ReviewsScreen() {
                     )}
                   </Pressable>
                 );
-              })
-            ) : (
-              <ThemedText
-                style={[
-                  styles.optionCaption,
-                  { color: mutedText, paddingHorizontal: 4 },
-                ]}
-              >
-                Type to search and select a spot.
-              </ThemedText>
-            )}
-          </View>
+              })}
+            </View>
+          )}
         </View>
 
         <View style={styles.section}>
@@ -223,9 +214,6 @@ export default function ReviewsScreen() {
           ]}
         >
           <ThemedText style={styles.primaryText}>Submit rating</ThemedText>
-          <ThemedText style={styles.primaryHint}>
-            Not wired yet — this is the visual shape.
-          </ThemedText>
         </Pressable>
       </ScrollView>
     </ThemedView>
@@ -335,20 +323,15 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   primaryButton: {
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 4,
+    borderRadius: 12,
+    padding: 14,
+    marginTop: 8,
   },
   primaryText: {
     color: "#fff",
     fontWeight: "700",
     textAlign: "center",
-    marginBottom: 3,
-    fontSize: 14,
-  },
-  primaryHint: {
-    color: "#e0f2ff",
-    fontSize: 12,
-    textAlign: "center",
+    fontSize: 16,
+    letterSpacing: 0.2,
   },
 });
