@@ -76,13 +76,11 @@ export default function RecommendationsScreen() {
           Suggest
         </ThemedText>
 
-        <View
-          style={[
-            styles.card,
-            { backgroundColor: cardBackground, borderColor },
-          ]}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.groupScroll}
         >
-          <ThemedText style={styles.label}>Select group</ThemedText>
           {mockGroups.map((group) => {
             const selected = activeGroup.name === group.name;
             return (
@@ -90,46 +88,87 @@ export default function RecommendationsScreen() {
                 key={group.name}
                 onPress={() => handleSelectGroup(group)}
                 style={({ pressed }) => [
-                  styles.groupOption,
+                  styles.groupCard,
                   {
-                    borderColor,
-                    backgroundColor: selected ? accent + "12" : undefined,
+                    borderColor: selected ? accent : borderColor,
+                    backgroundColor: selected ? accent + "15" : cardBackground,
+                    borderWidth: selected ? 2 : 1,
                   },
-                  pressed && { opacity: 0.88 },
+                  pressed && styles.groupCardPressed,
                 ]}
               >
-                <View>
-                  <ThemedText style={styles.optionTitle}>
+                <View style={styles.groupCardContent}>
+                  <View
+                    style={[
+                      styles.groupIconCircle,
+                      {
+                        backgroundColor: selected
+                          ? accent + "25"
+                          : colorScheme === "dark"
+                          ? "#2d3137"
+                          : "#e6e8ec",
+                      },
+                    ]}
+                  >
+                    <ThemedText
+                      style={[
+                        styles.groupIconText,
+                        { color: selected ? accent : mutedText },
+                      ]}
+                    >
+                      {group.name.charAt(0)}
+                    </ThemedText>
+                  </View>
+                  <ThemedText
+                    style={[
+                      styles.groupName,
+                      { color: selected ? accent : undefined },
+                    ]}
+                  >
                     {group.name}
                   </ThemedText>
                   <ThemedText
-                    style={[styles.optionCaption, { color: mutedText }]}
+                    style={[styles.groupConstraints, { color: mutedText }]}
+                    numberOfLines={2}
                   >
                     {group.constraints}
                   </ThemedText>
-                </View>
-                {selected && (
                   <View
-                    style={[styles.pill, { backgroundColor: accent + "1a" }]}
+                    style={[
+                      styles.modeTag,
+                      {
+                        backgroundColor: selected
+                          ? accent + "20"
+                          : colorScheme === "dark"
+                          ? "#262a31"
+                          : "#f0f0f0",
+                      },
+                    ]}
                   >
-                    <ThemedText style={[styles.pillText, { color: accent }]}>
-                      Active
+                    <ThemedText
+                      style={[
+                        styles.modeTagText,
+                        { color: selected ? accent : mutedText },
+                      ]}
+                    >
+                      {group.mood}
                     </ThemedText>
                   </View>
-                )}
+                </View>
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
-        <View
-          style={[
-            styles.card,
-            { backgroundColor: cardBackground, borderColor },
-          ]}
-        >
-          <ThemedText style={styles.label}>Members included</ThemedText>
-          <View style={styles.memberGrid}>
+        <View style={styles.membersSection}>
+          <ThemedText style={styles.sectionLabel}>
+            Members ({selectedMembers.length}/{activeGroup.members.length})
+          </ThemedText>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.memberScroll}
+          >
             {activeGroup.members.map((member) => {
               const picked = selectedMembers.includes(member);
               return (
@@ -137,21 +176,53 @@ export default function RecommendationsScreen() {
                   key={member}
                   onPress={() => toggleMember(member)}
                   style={({ pressed }) => [
-                    styles.memberChip,
-                    {
-                      borderColor,
-                      backgroundColor: picked ? accent + "12" : undefined,
-                    },
-                    pressed && { opacity: 0.88 },
+                    styles.memberItem,
+                    pressed && styles.memberItemPressed,
                   ]}
                 >
-                  <ThemedText style={styles.memberInitial}>
-                    {member.charAt(0)}
-                  </ThemedText>
+                  <View
+                    style={[
+                      styles.memberAvatar,
+                      {
+                        borderColor: picked ? accent : borderColor,
+                        backgroundColor: picked
+                          ? accent + "20"
+                          : colorScheme === "dark"
+                          ? "#262a31"
+                          : "#fff",
+                        borderWidth: picked ? 2.5 : 1.5,
+                      },
+                    ]}
+                  >
+                    <ThemedText
+                      style={[
+                        styles.memberAvatarText,
+                        { color: picked ? accent : mutedText },
+                      ]}
+                    >
+                      {member.charAt(0)}
+                    </ThemedText>
+                    {picked && (
+                      <View
+                        style={[
+                          styles.memberCheck,
+                          {
+                            backgroundColor: accent,
+                            borderColor: cardBackground,
+                          },
+                        ]}
+                      >
+                        <IconSymbol name="checkmark" color="#fff" size={10} />
+                      </View>
+                    )}
+                  </View>
                   <ThemedText
                     style={[
-                      styles.memberName,
-                      { color: picked ? accent : mutedText },
+                      styles.memberLabel,
+                      {
+                        color: picked ? accent : mutedText,
+                        fontWeight: picked ? "700" : "500",
+                      },
                     ]}
                   >
                     {member}
@@ -159,7 +230,7 @@ export default function RecommendationsScreen() {
                 </Pressable>
               );
             })}
-          </View>
+          </ScrollView>
         </View>
 
         <Pressable
@@ -168,19 +239,15 @@ export default function RecommendationsScreen() {
           }}
           style={({ pressed }) => [
             styles.primaryButton,
-            { backgroundColor: accent },
-            pressed && { opacity: 0.9 },
+            pressed && styles.primaryButtonPressed,
           ]}
         >
-          <View style={styles.primaryContent}>
-            <IconSymbol name="sparkles" color="#fff" size={22} />
-            <ThemedText style={styles.primaryText}>
+          <View style={[styles.buttonGradient, { backgroundColor: accent }]}>
+            <IconSymbol name="sparkles" color="#fff" size={20} />
+            <ThemedText style={[styles.primaryText, { marginLeft: 8 }]}>
               Generate suggestion
             </ThemedText>
           </View>
-          <ThemedText style={styles.primaryHint}>
-            Not live yet — this is the shape of the flow.
-          </ThemedText>
         </Pressable>
       </ScrollView>
     </ThemedView>
@@ -197,93 +264,133 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   heading: {
+    marginBottom: 16,
+  },
+  groupScroll: {
+    paddingRight: 16,
+    marginBottom: 20,
+  },
+  groupCard: {
+    borderRadius: 16,
+    padding: 14,
+    marginRight: 12,
+    width: 180,
+    minHeight: 160,
+  },
+  groupCardPressed: {
+    transform: [{ scale: 0.97 }],
+    opacity: 0.9,
+  },
+  groupCardContent: {
+    alignItems: "center",
+  },
+  groupIconCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+  },
+  groupIconText: {
+    fontWeight: "800",
+    fontSize: 24,
+  },
+  groupName: {
+    fontWeight: "700",
+    fontSize: 15,
+    marginBottom: 6,
+    textAlign: "center",
+  },
+  groupConstraints: {
+    fontSize: 12,
+    textAlign: "center",
+    marginBottom: 10,
+    lineHeight: 16,
+  },
+  modeTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  modeTagText: {
+    fontWeight: "600",
+    fontSize: 11,
+  },
+  membersSection: {
+    marginBottom: 20,
+  },
+  sectionLabel: {
+    fontWeight: "700",
+    fontSize: 14,
     marginBottom: 12,
   },
-  card: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 8,
-    marginBottom: 8,
+  memberScroll: {
+    paddingRight: 16,
   },
-  label: {
-    fontWeight: "700",
-    marginBottom: 8,
-    fontSize: 14,
+  memberItem: {
+    alignItems: "center",
+    marginRight: 16,
+    width: 70,
   },
-  groupOption: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
+  memberItemPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.95 }],
+  },
+  memberAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 6,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    position: "relative",
   },
-  optionTitle: {
+  memberAvatarText: {
     fontWeight: "700",
-    marginBottom: 3,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 22,
   },
-  optionCaption: {
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  pill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 999,
-  },
-  pillText: {
-    fontWeight: "600",
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  memberGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 6,
-  },
-  memberChip: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 8,
-    marginRight: 8,
-    marginBottom: 8,
+  memberCheck: {
+    position: "absolute",
+    bottom: -2,
+    right: -2,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     alignItems: "center",
-    width: "46%",
+    justifyContent: "center",
+    borderWidth: 2.5,
   },
-  memberInitial: {
-    fontWeight: "700",
-    marginBottom: 3,
-    fontSize: 13,
-  },
-  memberName: {
-    fontSize: 13,
-    fontWeight: "600",
-    lineHeight: 18,
+  memberLabel: {
+    fontSize: 12,
+    textAlign: "center",
   },
   primaryButton: {
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 4,
+    borderRadius: 14,
+    marginTop: 8,
   },
-  primaryContent: {
+  primaryButtonPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.98 }],
+  },
+  buttonGradient: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 3,
+    padding: 14,
+    borderRadius: 14,
   },
   primaryText: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 14,
-    marginLeft: 6,
-    lineHeight: 20,
+    fontSize: 15,
+    letterSpacing: 0.2,
   },
   primaryHint: {
     textAlign: "center",
     color: "#e0f2ff",
     fontSize: 12,
+    marginTop: 6,
+    paddingHorizontal: 4,
   },
 });
