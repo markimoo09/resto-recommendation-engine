@@ -232,24 +232,21 @@ export default function RecommendationsScreen() {
             })}
           </ScrollView>
         </View>
-
-        <Pressable
-          onPress={() => {
-            // Here you would trigger the suggestion generation
-          }}
-          style={({ pressed }) => [
-            styles.primaryButton,
-            pressed && styles.primaryButtonPressed,
-          ]}
-        >
-          <View style={[styles.buttonGradient, { backgroundColor: accent }]}>
-            <IconSymbol name="sparkles" color="#fff" size={20} />
-            <ThemedText style={[styles.primaryText, { marginLeft: 8 }]}>
-              Generate suggestion
-            </ThemedText>
-          </View>
-        </Pressable>
       </ScrollView>
+
+      <Pressable
+        onPress={() => {
+          // Here you would trigger the suggestion generation
+        }}
+        style={({ pressed }) => [
+          styles.primaryButton,
+          pressed && styles.primaryButtonPressed,
+        ]}
+      >
+        <View style={[styles.buttonContent, { backgroundColor: accent }]}>
+          <ThemedText style={styles.primaryText}>Generate suggestion</ThemedText>
+        </View>
+      </Pressable>
     </ThemedView>
   );
 }
@@ -261,7 +258,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 16,
     paddingTop: 44,
-    paddingBottom: 80,
+    paddingBottom: 100,
   },
   heading: {
     marginBottom: 16,
@@ -366,31 +363,35 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   primaryButton: {
-    borderRadius: 14,
-    marginTop: 8,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    paddingBottom: 34,
+    paddingTop: 16,
+    backgroundColor: "transparent",
   },
   primaryButtonPressed: {
     opacity: 0.9,
     transform: [{ scale: 0.98 }],
   },
-  buttonGradient: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 14,
+  buttonContent: {
     borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
   primaryText: {
     color: "#fff",
     fontWeight: "700",
     fontSize: 15,
     letterSpacing: 0.2,
-  },
-  primaryHint: {
-    textAlign: "center",
-    color: "#e0f2ff",
-    fontSize: 12,
-    marginTop: 6,
-    paddingHorizontal: 4,
+    marginLeft: 0,
   },
 });

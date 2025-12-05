@@ -204,17 +204,18 @@ export default function ReviewsScreen() {
             ))}
           </View>
         </View>
-
-        <Pressable
-          style={({ pressed }) => [
-            styles.primaryButton,
-            { backgroundColor: accent },
-            pressed && { opacity: 0.9 },
-          ]}
-        >
-          <ThemedText style={styles.primaryText}>Submit rating</ThemedText>
-        </Pressable>
       </ScrollView>
+
+      <Pressable
+        style={({ pressed }) => [
+          styles.primaryButton,
+          pressed && styles.primaryButtonPressed,
+        ]}
+      >
+        <View style={[styles.buttonContent, { backgroundColor: accent }]}>
+          <ThemedText style={styles.primaryText}>Submit rating</ThemedText>
+        </View>
+      </Pressable>
     </ThemedView>
   );
 }
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 16,
     paddingTop: 44,
-    paddingBottom: 80,
+    paddingBottom: 100,
   },
   heading: {
     marginBottom: 12,
@@ -323,15 +324,35 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   primaryButton: {
-    borderRadius: 12,
-    padding: 14,
-    marginTop: 8,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    paddingBottom: 34,
+    paddingTop: 16,
+    backgroundColor: "transparent",
+  },
+  primaryButtonPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.98 }],
+  },
+  buttonContent: {
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
   primaryText: {
     color: "#fff",
     fontWeight: "700",
-    textAlign: "center",
-    fontSize: 16,
+    fontSize: 15,
     letterSpacing: 0.2,
+    marginLeft: 0,
   },
 });
