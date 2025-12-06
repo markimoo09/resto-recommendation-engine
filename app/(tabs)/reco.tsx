@@ -6,6 +6,7 @@ import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { postFoo } from "@/api/client";
 
 type Group = {
   name: string;
@@ -49,6 +50,8 @@ export default function RecommendationsScreen() {
   const [selectedMembers, setSelectedMembers] = useState<string[]>(
     mockGroups[0].members
   );
+	  const [isGenerating, setIsGenerating] = useState(false);
+	  const [demoResult, setDemoResult] = useState<string | null>(null);
 
   const palette = useMemo(
     () => ({
@@ -74,6 +77,25 @@ export default function RecommendationsScreen() {
     setActiveGroup(group);
     setSelectedMembers(group.members);
   };
+
+	  const handleGenerateSuggestions = async () => {
+	    try {
+	      setIsGenerating(true);
+	      setDemoResult(null);
+	      // Demo call to the typed FastAPI backend. Once the backend is
+	      // running (uvicorn backend.backend.main:app), this will hit
+	      // POST /foo with a fully type-checked payload and response.
+	      const result = await postFoo({ foo: activeGroup.name });
+	      const first = result[0];
+	      if (first) {
+	        setDemoResult(first.bar);
+	      }
+	    } catch (error) {
+	      console.error("Failed to generate suggestions", error);
+	    } finally {
+	      setIsGenerating(false);
+	    }
+	  };
 
   return (
     <ThemedView style={styles.container}>
@@ -186,9 +208,9 @@ export default function RecommendationsScreen() {
         {/* Members Section */}
         <View style={styles.membersSection}>
           <View style={styles.membersHeader}>
-            <ThemedText style={[styles.sectionLabel, { color: palette.muted }]}>
-              WHO'S COMING
-            </ThemedText>
+	            <ThemedText style={[styles.sectionLabel, { color: palette.muted }]}>
+	              WHO&apos;S COMING
+	            </ThemedText>
             <View
               style={[styles.countPill, { backgroundColor: accent + "14" }]}
             >
@@ -277,9 +299,17 @@ export default function RecommendationsScreen() {
               </ThemedText>
               <ThemedText style={[styles.summarySub, { color: palette.muted }]}>
                 {selectedMembers.length} member
-                {selectedMembers.length !== 1 ? "s" : ""} · {activeGroup.mood}{" "}
-                mode
-              </ThemedText>
+	                {selectedMembers.length !== 1 ? "s" : ""} · {activeGroup.mood}{" "}
+	                mode
+	              </ThemedText>
+	              {demoResult && (
+	                <ThemedText
+	                  style={[styles.summarySub, { color: palette.muted }]}
+	                  numberOfLines={1}
+	                >
+	                  Backend echo: {demoResult}
+	                </ThemedText>
+	              )}
             </View>
           </View>
         </View>
@@ -288,19 +318,18 @@ export default function RecommendationsScreen() {
       {/* Generate Button */}
       <View style={styles.buttonArea}>
         <Pressable
-          onPress={() => {
-            // Trigger suggestion generation
-          }}
+	          onPress={handleGenerateSuggestions}
+	          disabled={isGenerating}
           style={({ pressed }) => [
             styles.generateBtn,
-            { backgroundColor: accent },
+	            { backgroundColor: accent, opacity: isGenerating ? 0.7 : 1 },
             pressed && { opacity: 0.9, transform: [{ scale: 0.98 }] },
           ]}
         >
           <IconSymbol name="sparkles" size={18} color="#fff" />
-          <ThemedText style={styles.generateText}>
-            Generate suggestions
-          </ThemedText>
+	          <ThemedText style={styles.generateText}>
+	            {isGenerating ? "Generating..." : "Generate suggestions"}
+	          </ThemedText>
         </Pressable>
       </View>
     </ThemedView>
