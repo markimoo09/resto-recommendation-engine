@@ -9,6 +9,14 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
+// Uncomment this to test your supabase connection
+// supabase.auth
+//   .getSession()
+//   .then(({ data }) => console.log("session", data.session));
+// const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+//   console.log("auth event", event, !!session);
+// });
+
 export const unstable_settings = {
   anchor: "(tabs)",
 };
