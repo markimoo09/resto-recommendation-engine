@@ -10,7 +10,13 @@ type AuthCallback = (
   session: Session | null
 ) => void;
 
-const redirectTo = makeRedirectUri({ scheme: "kilo", path: "auth/callback" });
+const redirectTo = makeRedirectUri({
+  scheme: "kilo",
+  path: "auth/callback",
+  native: "kilo://auth/callback",
+});
+
+console.log("redirectTo", redirectTo);
 
 export const authManager = {
   signInWithGoogle: async () => {
