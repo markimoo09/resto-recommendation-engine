@@ -8,9 +8,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -29,14 +31,24 @@ export default function SignInScreen() {
           color={GoogleSigninButton.Color.Dark}
           onPress={async () => {
             try {
+              setLoading(true);
               await GoogleSignin.hasPlayServices();
               const response = await GoogleSignin.signIn();
               if (isSuccessResponse(response)) {
+                const idToken = response.data?.idToken;
+                if (!idToken) {
+                  throw new Error("Missing idToken from Google");
+                }
+
                 const { data, error } = await supabase.auth.signInWithIdToken({
                   provider: "google",
-                  token: response.data?.idToken ?? "",
+                  token: idToken,
                 });
                 console.log(error, data);
+
+                if (!error) {
+                  router.replace("/(tabs)");
+                }
               }
             } catch (error: any) {
               if (error.code === statusCodes.IN_PROGRESS) {
@@ -48,6 +60,8 @@ export default function SignInScreen() {
               } else {
                 console.log("Authentication Error: ", error);
               }
+            } finally {
+              setLoading(false);
             }
           }}
         />
