@@ -10,7 +10,16 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.projectkilo"
+      "bundleIdentifier": "com.anonymous.projectkilo",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.619012143144-4trlpfh0mphu330bf26e7t37u6ihvmhq"
+            ]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
