@@ -7,6 +7,8 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
+import { authManager } from "@/services/auth_manager";
+
 const stats = [
   { label: "Groups", value: "3", icon: "person.2.fill" },
   { label: "Ratings", value: "18", icon: "star.fill" },
@@ -200,6 +202,9 @@ export default function ProfileScreen() {
             { borderColor: "#ef4444" + "40" },
             pressed && { opacity: 0.8 },
           ]}
+          onPress={() => {
+            authManager.signOut();
+          }}
         >
           <ThemedText style={styles.dangerText}>Sign out</ThemedText>
         </Pressable>
