@@ -1,14 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 import "expo-sqlite/localStorage/install";
 
-const useLocal = process.env.ENVIRONMENT === "development";
+const useLocal = process.env.EXPO_PUBLIC_ENVIRONMENT === "development";
 
 const supabaseUrl = useLocal
-  ? process.env.EXPO_LOCAL_SUPABASE_URL
+  ? process.env.EXPO_PUBLIC_LOCAL_SUPABASE_URL
   : process.env.EXPO_PUBLIC_SUPABASE_URL;
 
 const supabasePublishableKey = useLocal
-  ? process.env.EXPO_LOCAL_SUPABASE_PUBLISHABLE_KEY
+  ? process.env.EXPO_PUBLIC_LOCAL_SUPABASE_PUBLISHABLE_KEY
   : process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
 if (!supabaseUrl || !supabasePublishableKey) {
